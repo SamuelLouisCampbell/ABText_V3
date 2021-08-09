@@ -12,12 +12,15 @@ void ofApp::setup()
 	ofSetBackgroundColor(0.0f);
 	ofSetLogLevel(OF_LOG_VERBOSE);
 
-	//Spout init
-	sendClean.init("A&B Text Clean");
-	sendOutline.init("A&B Text Outline");
-
+	//TODO Load this shit from file;
 	//Font Stuff
-
+	rasterSize.setSize(3840.0f, 2160.0f);
+	center_x = rasterSize.getWidth() / 2.0f;
+	center_y = rasterSize.getHeight() / 2.0f;
+	
+	//Spout init
+	sendClean.init("A&B Text Clean", rasterSize.getWidth(), rasterSize.getHeight());
+	sendOutline.init("A&B Text Outline", rasterSize.getWidth(), rasterSize.getHeight());
 
 	//server things
 	server = std::make_unique<CustomServer>(6000);
@@ -32,15 +35,83 @@ void ofApp::setup()
 //--------------------------------------------------------------
 void ofApp::update()
 {
-
+	server->Update(-1, false);
+	RunHealthCheck();
 }
 
 //--------------------------------------------------------------
 void ofApp::draw()
 {
+	UpdateTime();
+
+	//Get string from server
+	std::wstring temp = server->GetMessageStream();
+	//std::wstring temp = L"NULL....Hello You";
+	//parse out Control string and erase from message
+	std::wstring controlString = temp.substr(0, 8);
+	temp.erase(0, 8);
+
+	if (controlString != L"NULL....")
+	{
+		SizeControl(controlString);
+	}
+	//FBO
+	bufferFBO.allocate(rasterSize.getWidth(), rasterSize.getHeight(), GL_RGBA);
+	bufferFBO.begin();
+	ofClear(0, 0, 0, 0);
+
+	//Draw Text etc.
+	if (temp.size() > 0)
+	{
+		alpha = 255;
+		ofSetColor(255, alpha);
+		oldMessage = temp;
+		StringHandling sh = { temp, currFontBreak };
+		float totalHeight = sh.GetStringies().size() * ABfont.getLineHeight();
+		float Y_Start = center_y - (totalHeight / 2.0f + curr_y_off);
+		
+		for (auto& string : sh.GetStringies())
+		{
+			//pre calc size of text
+			float X_start = ABfont.getStringBoundingBox(wideToString(string), 0.0f, 0.0f).getWidth();
+			Y_Start += (ABfont.getLineHeight());
+			
+			ABfont.drawString(wideToString(string), center_x -  (X_start / 2.0f), Y_Start);
+		}
+
+		holdingLastMsg = false;
+	}
+	else if (temp.size() == 0)
+	{
+		ofSetColor(255, alpha);
+		holdingLastMsg = true;
+		StringHandling sh = { oldMessage, currFontBreak };
+		float totalHeight = sh.GetStringies().size() * ABfont.getLineHeight();
+		float Y_Start = center_y - (totalHeight / 2.0f + curr_y_off);
+		
+		for (auto& string : sh.GetStringies())
+		{
+			//pre calc size of text
+			float X_start = ABfont.getStringBoundingBox(wideToString(string), 0.0f, 0.0f).getWidth();
+			Y_Start += (ABfont.getLineHeight());
+
+			ABfont.drawString(wideToString(string), center_x - (X_start / 2.0f), Y_Start);
+		}
+		alpha -= alphaTime;
+	}
+
+	//Finish drawing all things into first Buffer.
+	bufferFBO.end();
+
+	//draw things to our screen
 	ofSetColor(255);
-	ABfont.drawString("HELLO!",100.0f, 100.0f);
-	DrawCenterCross();
+	//shader.begin();
+	//ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
+	bufferFBO.draw(0, 0, ofGetWindowWidth(), ofGetWindowHeight());
+
+	//shader.end();
+	//DrawCenterCross();
+
 }
 
 void ofApp::exit()
@@ -101,3 +172,19 @@ void ofApp::RunHealthCheck()
 	netLooper++;
 }
 
+void ofApp::SizeControl(const std::wstring& ctrlStr)
+{
+	if (ctrlStr == L"LARGE...")
+	{
+		currFontSize = largeFontSize;
+		currFontBreak = largeFontBreak;
+		curr_y_off = large_y_off;
+	}
+
+	else if (ctrlStr == L"SMALL...")
+	{
+		currFontSize = smallFontSize;
+		currFontBreak = smallFontBreak;
+		curr_y_off = small_y_off;
+	}
+}

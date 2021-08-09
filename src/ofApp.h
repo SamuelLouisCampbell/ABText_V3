@@ -32,12 +32,32 @@ class ofApp : public ofBaseApp{
 
 		//FBO stuff
 		ofFbo bufferFBO;
-		float screenRatio;
-		ofPixels pixels;
 
 		//shaders
 		ofShader outlineShader;
 
-		//Font
+		//Font & Text
 		ofTrueTypeFont ABfont;
+		void SizeControl(const std::wstring& ctrlStr);
+
+		ofRectangle rasterSize;
+		float smallFontSize = 256.0f;
+		float largeFontSize = 256.0f;
+		size_t smallFontBreak = 60;
+		size_t largeFontBreak = 12;
+		float currFontSize = smallFontSize;
+		size_t currFontBreak = smallFontBreak;
+		float center_x;
+		float center_y;
+		float small_y_off = 22.0f;
+		float large_y_off = 80.0f;
+		float curr_y_off = small_y_off;
+		float borderWidth = 2.0f;
+
+		ofColor oldFillCol;
+		bool currSmall = true;
+		std::wstring oldMessage = L"";
+		bool holdingLastMsg = false;
+		int alpha = 255;
+		int alphaTime = 6;
 };
