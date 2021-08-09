@@ -129,6 +129,9 @@
     <Filter Include="addons\ofxSpout\libs\SpoutSDK\src">
       <UniqueIdentifier>{CC43A1EC-9F74-499A-D230-67A8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Shaders">
+      <UniqueIdentifier>{d379b870-6294-4757-a572-21d4a747f3ad}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\ofApp.h">
@@ -245,5 +248,16 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="icon.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\data\shaders\geom.glsl">
+      <Filter>src\Shaders</Filter>
+    </None>
+    <None Include="bin\data\shaders\vert.glsl">
+      <Filter>src\Shaders</Filter>
+    </None>
+    <None Include="bin\data\shaders\frag.glsl">
+      <Filter>src\Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

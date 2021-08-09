@@ -17,7 +17,7 @@ void ofApp::setup()
 	rasterSize.setSize(3840.0f, 2160.0f);
 	center_x = rasterSize.getWidth() / 2.0f;
 	center_y = rasterSize.getHeight() / 2.0f;
-	
+#
 	//Spout init
 	sendClean.init("A&B Text Clean", rasterSize.getWidth(), rasterSize.getHeight());
 	sendOutline.init("A&B Text Outline", rasterSize.getWidth(), rasterSize.getHeight());
@@ -29,6 +29,12 @@ void ofApp::setup()
 
 	//Font
 	ABfont.load("ABF.ttf", 128, true, true, true);
+
+	//Shader
+	outlineShader.setGeometryInputType(GL_LINES);
+	outlineShader.setGeometryOutputType(GL_TRIANGLE_STRIP);
+	outlineShader.setGeometryOutputCount(6);
+	outlineShader.load("shaders/vert.glsl", "shaders/frag.glsl", "shaders/geom.glsl");
 
 }
 
@@ -60,6 +66,13 @@ void ofApp::draw()
 	bufferFBO.begin();
 	ofClear(0, 0, 0, 0);
 
+	//Shader
+	outlineShader.begin();
+	outlineShader.setUniform4f("colorIn", 1.0f, 1.0f, 1.0f, 1.0f);
+	// set thickness of ribbons
+	outlineShader.setUniform1f("thickness", 2.0f);
+
+
 	float lineHeight = ABfont.getLineHeight();
 	//Draw Text etc.
 	if (temp.size() > 0)
@@ -73,13 +86,21 @@ void ofApp::draw()
 		
 		for (auto& string : sh.GetStringies())
 		{
+			ofTranslate(center_x, center_y + Y_Start);
 			//pre calc size of text
 			float X_start = ABfont.getStringBoundingBox(wideToString(string), 0.0f, 0.0f).getWidth();
 			Y_Start += lineHeight;
-			ABfont.drawString(wideToString(string), center_x -  (X_start / 2.0f), Y_Start);
-			
+			//ABfont.drawString(wideToString(string), center_x -  (X_start / 2.0f), Y_Start);
+			fontPaths = ABfont.getStringAsPoints(wideToString(string));
+			for (int i = 0; i < fontPaths.size(); i++)
+			{
+				fontPaths[i].setStrokeWidth(1.0f);
+				fontPaths[i].draw();
+			}
+			fontPaths.clear();
 		}
-
+		
+		outlineShader.end();
 		holdingLastMsg = false;
 	}
 	else if (temp.size() == 0)
@@ -97,6 +118,7 @@ void ofApp::draw()
 			Y_Start += lineHeight;
 			ABfont.drawString(wideToString(string), center_x - (X_start / 2.0f), Y_Start);
 		}
+		outlineShader.end();
 		alpha -= alphaTime;
 	}
 

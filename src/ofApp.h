@@ -35,6 +35,8 @@ class ofApp : public ofBaseApp{
 
 		//shaders
 		ofShader outlineShader;
+		std::vector<glm::vec3> points;
+		std::vector<ofPath> fontPaths;
 
 		//Font & Text
 		ofTrueTypeFont ABfont;
