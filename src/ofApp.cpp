@@ -28,7 +28,7 @@ void ofApp::setup()
 	std::cout << "Server Started on Default Port: 6000" << std::endl;
 
 	//Font
-	ABfont.load("ABF.ttf", 192, true, true, true);
+	ABfont.load("ABF.ttf", 128, true, true, true);
 
 }
 
@@ -60,6 +60,7 @@ void ofApp::draw()
 	bufferFBO.begin();
 	ofClear(0, 0, 0, 0);
 
+	float lineHeight = ABfont.getLineHeight();
 	//Draw Text etc.
 	if (temp.size() > 0)
 	{
@@ -67,16 +68,16 @@ void ofApp::draw()
 		ofSetColor(255, alpha);
 		oldMessage = temp;
 		StringHandling sh = { temp, currFontBreak };
-		float totalHeight = sh.GetStringies().size() * ABfont.getLineHeight();
-		float Y_Start = center_y - (totalHeight / 2.0f + curr_y_off);
+		float totalHeight = sh.GetStringies().size() * lineHeight;
+		float Y_Start = center_y - (totalHeight / 2.0f) - (lineHeight / 2.0f) + curr_y_off;
 		
 		for (auto& string : sh.GetStringies())
 		{
 			//pre calc size of text
 			float X_start = ABfont.getStringBoundingBox(wideToString(string), 0.0f, 0.0f).getWidth();
-			Y_Start += (ABfont.getLineHeight());
-			
+			Y_Start += lineHeight;
 			ABfont.drawString(wideToString(string), center_x -  (X_start / 2.0f), Y_Start);
+			
 		}
 
 		holdingLastMsg = false;
@@ -86,15 +87,14 @@ void ofApp::draw()
 		ofSetColor(255, alpha);
 		holdingLastMsg = true;
 		StringHandling sh = { oldMessage, currFontBreak };
-		float totalHeight = sh.GetStringies().size() * ABfont.getLineHeight();
-		float Y_Start = center_y - (totalHeight / 2.0f + curr_y_off);
+		float totalHeight = sh.GetStringies().size() * lineHeight;
+		float Y_Start = center_y - (totalHeight / 2.0f) - (lineHeight / 2.0f) + curr_y_off;
 		
 		for (auto& string : sh.GetStringies())
 		{
 			//pre calc size of text
 			float X_start = ABfont.getStringBoundingBox(wideToString(string), 0.0f, 0.0f).getWidth();
-			Y_Start += (ABfont.getLineHeight());
-
+			Y_Start += lineHeight;
 			ABfont.drawString(wideToString(string), center_x - (X_start / 2.0f), Y_Start);
 		}
 		alpha -= alphaTime;
@@ -103,6 +103,10 @@ void ofApp::draw()
 	//Finish drawing all things into first Buffer.
 	bufferFBO.end();
 
+	//Send SPOUT 
+	sendClean.send(bufferFBO.getTexture());
+	sendOutline.send(bufferFBO.getTexture());
+
 	//draw things to our screen
 	ofSetColor(255);
 	//shader.begin();
@@ -110,7 +114,7 @@ void ofApp::draw()
 	bufferFBO.draw(0, 0, ofGetWindowWidth(), ofGetWindowHeight());
 
 	//shader.end();
-	//DrawCenterCross();
+	DrawCenterCross();
 
 }
 
@@ -176,15 +180,15 @@ void ofApp::SizeControl(const std::wstring& ctrlStr)
 {
 	if (ctrlStr == L"LARGE...")
 	{
-		currFontSize = largeFontSize;
-		currFontBreak = largeFontBreak;
+		//currFontSize = largeFontSize;
+		//currFontBreak = largeFontBreak;
 		curr_y_off = large_y_off;
 	}
 
 	else if (ctrlStr == L"SMALL...")
 	{
-		currFontSize = smallFontSize;
-		currFontBreak = smallFontBreak;
+		//currFontSize = smallFontSize;
+		//currFontBreak = smallFontBreak;
 		curr_y_off = small_y_off;
 	}
 }
