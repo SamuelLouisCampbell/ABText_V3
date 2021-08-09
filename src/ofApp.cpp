@@ -28,7 +28,7 @@ void ofApp::setup()
 	std::cout << "Server Started on Default Port: 6000" << std::endl;
 
 	//Font
-	ABfont.load("ABF.ttf", 128, true, true, true);
+	ABfont.load("ABF.ttf", 256, true, true, true);
 
 	//Shader
 	outlineShader.setGeometryInputType(GL_LINES);
@@ -86,18 +86,19 @@ void ofApp::draw()
 		
 		for (auto& string : sh.GetStringies())
 		{
-			ofTranslate(center_x, center_y + Y_Start);
+			
 			//pre calc size of text
 			float X_start = ABfont.getStringBoundingBox(wideToString(string), 0.0f, 0.0f).getWidth();
 			Y_Start += lineHeight;
 			//ABfont.drawString(wideToString(string), center_x -  (X_start / 2.0f), Y_Start);
-			fontPaths = ABfont.getStringAsPoints(wideToString(string));
-			for (int i = 0; i < fontPaths.size(); i++)
-			{
-				fontPaths[i].setStrokeWidth(1.0f);
-				fontPaths[i].draw();
-			}
-			fontPaths.clear();
+			fontPaths.push_back(ABfont.getStringAsPoints(wideToString(string)));
+
+		}
+		for (int i = 0; i < fontPaths.size(); i++)
+		{
+			//ofTranslate(center_x, center_y + Y_Start);
+			fontPaths[i].front().setStrokeWidth(1.0f);
+			fontPaths[i].front().draw();
 		}
 		
 		outlineShader.end();
