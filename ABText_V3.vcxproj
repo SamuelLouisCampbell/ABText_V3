@@ -104,7 +104,7 @@
       <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);..\..\..\addons\ofxImGui-master\libs;..\..\..\addons\ofxImGui-master\libs\imgui;..\..\..\addons\ofxImGui-master\libs\imgui\src;..\..\..\addons\ofxImGui-master\src;..\..\..\addons\ofxSpout\libs;..\..\..\addons\ofxSpout\libs\SpoutSDK;..\..\..\addons\ofxSpout\libs\SpoutSDK\src;..\..\..\addons\ofxSpout\src;..\..\..\addons\ofxSpout\src\ofxSpout</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Sam Campbell\source\repos\SamCamAsioNetworking\asio-1.18.0\asio-1.18.0\include;C:\Users\Sam Campbell\source\repos\SamCamAsioNetworking\NetCommon;%(AdditionalIncludeDirectories);..\..\..\addons\ofxImGui-master\libs;..\..\..\addons\ofxImGui-master\libs\imgui;..\..\..\addons\ofxImGui-master\libs\imgui\src;..\..\..\addons\ofxImGui-master\src;..\..\..\addons\ofxSpout\libs;..\..\..\addons\ofxSpout\libs\SpoutSDK;..\..\..\addons\ofxSpout\libs\SpoutSDK\src;..\..\..\addons\ofxSpout\src;..\..\..\addons\ofxSpout\src\ofxSpout</AdditionalIncludeDirectories>
       <CompileAs>CompileAsCpp</CompileAs>
       <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
     </ClCompile>
@@ -250,6 +250,8 @@
     <ClInclude Include="..\..\..\addons\ofxSpout\libs\SpoutSDK\src\SpoutSenderNames.h" />
     <ClInclude Include="..\..\..\addons\ofxSpout\libs\SpoutSDK\src\SpoutSharedMemory.h" />
     <ClInclude Include="..\..\..\addons\ofxSpout\libs\SpoutSDK\src\SpoutUtils.h" />
+    <ClInclude Include="src\StringHandling.h" />
+    <ClInclude Include="src\TCPNet.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="$(OF_ROOT)\libs\openFrameworksCompiled\project\vs\openframeworksLib.vcxproj">

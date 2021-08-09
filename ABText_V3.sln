@@ -1,8 +1,15 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31005.135
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ABText_V3", "ABText_V3.vcxproj", "{7FD42DF7-442E-479A-BA76-D0022F99702A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{56472B54-5F8B-4D2D-B4DB-08DE4FA8316C} = {56472B54-5F8B-4D2D-B4DB-08DE4FA8316C}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "openframeworksLib", "..\..\..\libs\openFrameworksCompiled\project\vs\openframeworksLib.vcxproj", "{5837595D-ACA9-485C-8E76-729040CE4B0B}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NetCommon", "C:\Users\Sam Campbell\source\repos\SamCamAsioNetworking\NetCommon\NetCommon.vcxproj", "{56472B54-5F8B-4D2D-B4DB-08DE4FA8316C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -28,8 +35,19 @@ Global
 		{5837595D-ACA9-485C-8E76-729040CE4B0B}.Release|Win32.Build.0 = Release|Win32
 		{5837595D-ACA9-485C-8E76-729040CE4B0B}.Release|x64.ActiveCfg = Release|x64
 		{5837595D-ACA9-485C-8E76-729040CE4B0B}.Release|x64.Build.0 = Release|x64
+		{56472B54-5F8B-4D2D-B4DB-08DE4FA8316C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{56472B54-5F8B-4D2D-B4DB-08DE4FA8316C}.Debug|Win32.Build.0 = Debug|Win32
+		{56472B54-5F8B-4D2D-B4DB-08DE4FA8316C}.Debug|x64.ActiveCfg = Debug|x64
+		{56472B54-5F8B-4D2D-B4DB-08DE4FA8316C}.Debug|x64.Build.0 = Debug|x64
+		{56472B54-5F8B-4D2D-B4DB-08DE4FA8316C}.Release|Win32.ActiveCfg = Release|Win32
+		{56472B54-5F8B-4D2D-B4DB-08DE4FA8316C}.Release|Win32.Build.0 = Release|Win32
+		{56472B54-5F8B-4D2D-B4DB-08DE4FA8316C}.Release|x64.ActiveCfg = Release|x64
+		{56472B54-5F8B-4D2D-B4DB-08DE4FA8316C}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {518FA4A4-E7E8-47FC-A50F-6FB3654AA73F}
 	EndGlobalSection
 EndGlobal
