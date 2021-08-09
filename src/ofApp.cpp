@@ -28,7 +28,7 @@ void ofApp::setup()
 	std::cout << "Server Started on Default Port: 6000" << std::endl;
 
 	//Font
-	ABfont.load("ABF.ttf", 256, true, true, true);
+	ABfont.load("ABF.ttf", 128, true, true, true);
 
 	//Shader
 	outlineShader.setGeometryInputType(GL_LINES);
@@ -72,7 +72,7 @@ void ofApp::draw()
 	// set thickness of ribbons
 	outlineShader.setUniform1f("thickness", 2.0f);
 
-
+	
 	float lineHeight = ABfont.getLineHeight();
 	//Draw Text etc.
 	if (temp.size() > 0)
@@ -82,25 +82,29 @@ void ofApp::draw()
 		oldMessage = temp;
 		StringHandling sh = { temp, currFontBreak };
 		float totalHeight = sh.GetStringies().size() * lineHeight;
-		float Y_Start = center_y - (totalHeight / 2.0f) - (lineHeight / 2.0f) + curr_y_off;
+		float Y_Start = center_y - (totalHeight / 2.0f);
 		
+		//clear out previous font locations
+		fontLocs.clear();
+
 		for (auto& string : sh.GetStringies())
 		{
-			
-			//pre calc size of text
 			float X_start = ABfont.getStringBoundingBox(wideToString(string), 0.0f, 0.0f).getWidth();
+			fontLocs.push_back({ center_x - (X_start / 2.0f), Y_Start });
 			Y_Start += lineHeight;
-			//ABfont.drawString(wideToString(string), center_x -  (X_start / 2.0f), Y_Start);
-			fontPaths.push_back(ABfont.getStringAsPoints(wideToString(string)));
-
-		}
-		for (int i = 0; i < fontPaths.size(); i++)
-		{
-			//ofTranslate(center_x, center_y + Y_Start);
-			fontPaths[i].front().setStrokeWidth(1.0f);
-			fontPaths[i].front().draw();
 		}
 		
+		//ofTranslate(fontLocs[0].first, fontLocs[0].second);
+		for (int i = 0; i < sh.GetStringies().size(); i++)
+		{
+			fontPaths = ABfont.getStringAsPoints(wideToString(sh.GetStringies()[i]));
+			for (int j = 0; j < fontPaths.size(); j++)
+			{
+				fontPaths[j].setStrokeWidth(1.0f);
+				fontPaths[j].draw(fontLocs[i].first, fontLocs[i].second);
+			}
+
+		}
 		outlineShader.end();
 		holdingLastMsg = false;
 	}

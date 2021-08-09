@@ -35,7 +35,8 @@ class ofApp : public ofBaseApp{
 
 		//shaders
 		ofShader outlineShader;
-		std::vector<std::vector<ofPath>> fontPaths;
+		std::vector<ofPath> fontPaths;
+		std::vector<std::pair<float, float>> fontLocs;
 
 		//Font & Text
 		ofTrueTypeFont ABfont;
