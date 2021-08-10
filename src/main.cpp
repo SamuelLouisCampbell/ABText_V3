@@ -1,6 +1,11 @@
 #include "ofMain.h"
 #include "ofApp.h"
 
+//Strange code to make stuff 
+extern "C"
+{
+	__declspec(dllexport) unsigned long NvOptimusEnablement = 0x00000001;
+}
 //========================================================================
 int main( ){
 	ofSetupOpenGL(1280,720,OF_WINDOW);			// <-------- setup the GL context

@@ -31,7 +31,8 @@ class ofApp : public ofBaseApp{
 		ofxSpout::Sender sendOutline;
 
 		//FBO stuff
-		ofFbo bufferFBO;
+		ofFbo cleanFBO;
+		ofFbo outlineFBO;
 
 		//shaders
 		ofShader outlineShader;

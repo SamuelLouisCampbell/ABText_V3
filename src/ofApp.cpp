@@ -14,7 +14,7 @@ void ofApp::setup()
 
 	//TODO Load this shit from file;
 	//Font Stuff
-	rasterSize.setSize(3840.0f, 2160.0f);
+	rasterSize.setSize(7680.0f, 4320.0f);
 	center_x = rasterSize.getWidth() / 2.0f;
 	center_y = rasterSize.getHeight() / 2.0f;
 #
@@ -28,7 +28,7 @@ void ofApp::setup()
 	std::cout << "Server Started on Default Port: 6000" << std::endl;
 
 	//Font
-	ABfont.load("ABF.ttf", 128, true, true, true);
+	ABfont.load("ABF.ttf", 256, true, true, true);
 
 	//Shader
 	outlineShader.setGeometryInputType(GL_LINES);
@@ -61,28 +61,23 @@ void ofApp::draw()
 	{
 		SizeControl(controlString);
 	}
-	//FBO
-	bufferFBO.allocate(rasterSize.getWidth(), rasterSize.getHeight(), GL_RGBA);
-	bufferFBO.begin();
-	ofClear(0, 0, 0, 0);
+	cleanFBO.allocate(rasterSize.getWidth(), rasterSize.getHeight(), GL_RGBA);
+	outlineFBO.allocate(rasterSize.getWidth(), rasterSize.getHeight(), GL_RGBA);
 
-	//Shader
-	outlineShader.begin();
-	outlineShader.setUniform4f("colorIn", 1.0f, 1.0f, 1.0f, 1.0f);
-	// set thickness of ribbons
-	outlineShader.setUniform1f("thickness", 2.0f);
-
-	
-	float lineHeight = ABfont.getLineHeight();
 	//Draw Text etc.
+	float lineHeight = ABfont.getLineHeight();
 	if (temp.size() > 0)
 	{
+		//FBO clean
+		cleanFBO.begin();
+		ofClear(0, 0, 0, 0);
+
 		alpha = 255;
 		ofSetColor(255, alpha);
 		oldMessage = temp;
 		StringHandling sh = { temp, currFontBreak };
 		float totalHeight = sh.GetStringies().size() * lineHeight;
-		float Y_Start = center_y - (totalHeight / 2.0f);
+		float Y_Start = center_y - (totalHeight / 2.0f) + lineHeight - curr_y_off;
 		
 		//clear out previous font locations
 		fontLocs.clear();
@@ -91,9 +86,23 @@ void ofApp::draw()
 		{
 			float X_start = ABfont.getStringBoundingBox(wideToString(string), 0.0f, 0.0f).getWidth();
 			fontLocs.push_back({ center_x - (X_start / 2.0f), Y_Start });
+			ofSetColor(0, 128, 0);
+			ABfont.drawString(wideToString(string), center_x - (X_start / 2.0f), Y_Start);
 			Y_Start += lineHeight;
 		}
+
+		//Finish clean things into Buffer.
+		cleanFBO.end();
+		//FBO outline
 		
+		outlineFBO.begin();
+		ofClear(0, 0, 0, 0);
+
+		//Shader
+		outlineShader.begin();
+		outlineShader.setUniform4f("colorIn", 1.0f, 1.0f, 1.0f, 1.0f);
+		// set thickness of ribbons
+		outlineShader.setUniform1f("thickness", 4.0f);
 		//ofTranslate(fontLocs[0].first, fontLocs[0].second);
 		for (int i = 0; i < sh.GetStringies().size(); i++)
 		{
@@ -106,6 +115,7 @@ void ofApp::draw()
 
 		}
 		outlineShader.end();
+		outlineFBO.end();
 		holdingLastMsg = false;
 	}
 	else if (temp.size() == 0)
@@ -127,18 +137,15 @@ void ofApp::draw()
 		alpha -= alphaTime;
 	}
 
-	//Finish drawing all things into first Buffer.
-	bufferFBO.end();
-
 	//Send SPOUT 
-	sendClean.send(bufferFBO.getTexture());
-	sendOutline.send(bufferFBO.getTexture());
+	sendClean.send(cleanFBO.getTexture());
+	sendOutline.send(outlineFBO.getTexture());
 
 	//draw things to our screen
 	ofSetColor(255);
 	//shader.begin();
 	//ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
-	bufferFBO.draw(0, 0, ofGetWindowWidth(), ofGetWindowHeight());
+	outlineFBO.draw(0, 0, ofGetWindowWidth(), ofGetWindowHeight());
 
 	//shader.end();
 	DrawCenterCross();
