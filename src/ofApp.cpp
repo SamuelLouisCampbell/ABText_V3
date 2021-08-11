@@ -14,7 +14,7 @@ void ofApp::setup()
 
 	//TODO Load this shit from file;
 	//Font Stuff
-	rasterSize.setSize(7680.0f, 4320.0f);
+	rasterSize.setSize(7680.0f, 2160.0f);
 	center_x = rasterSize.getWidth() / 2.0f;
 	center_y = rasterSize.getHeight() / 2.0f;
 #
@@ -120,6 +120,10 @@ void ofApp::draw()
 	}
 	else if (temp.size() == 0)
 	{
+		//FBO clean
+		cleanFBO.begin();
+		ofClear(0, 0, 0, 0);
+
 		ofSetColor(255, alpha);
 		holdingLastMsg = true;
 		StringHandling sh = { oldMessage, currFontBreak };
@@ -133,7 +137,29 @@ void ofApp::draw()
 			Y_Start += lineHeight;
 			ABfont.drawString(wideToString(string), center_x - (X_start / 2.0f), Y_Start);
 		}
+
+		cleanFBO.end();
+		outlineFBO.begin();
+		ofClear(0, 0, 0, 0);
+
+		//Shader
+		outlineShader.begin();
+		outlineShader.setUniform4f("colorIn", 1.0f, 1.0f, 1.0f, 1.0f);
+		// set thickness of ribbons
+		outlineShader.setUniform1f("thickness", 4.0f);
+		//ofTranslate(fontLocs[0].first, fontLocs[0].second);
+		for (int i = 0; i < sh.GetStringies().size(); i++)
+		{
+			fontPaths = ABfont.getStringAsPoints(wideToString(sh.GetStringies()[i]));
+			for (int j = 0; j < fontPaths.size(); j++)
+			{
+				fontPaths[j].setStrokeWidth(1.0f);
+				fontPaths[j].draw(fontLocs[i].first, fontLocs[i].second);
+			}
+
+		}
 		outlineShader.end();
+		outlineFBO.end();
 		alpha -= alphaTime;
 	}
 
