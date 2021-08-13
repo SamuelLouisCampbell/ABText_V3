@@ -13,17 +13,22 @@ public:
 		maxChars(lineBreak)
 	{
 		//TODO Line Wrapping
-
-
-		if (message.size() >= 1)
+		auto tempstringies = Break(message);
+		for (auto& str : tempstringies)
 		{
-			while (message.find('\n') != std::string::npos)
+			if (str.size() > lineBreak)
 			{
-				std::string temp = message.substr(0, message.find('\n'));
-				stringies.push_back(temp);
-				message.erase(0, message.find('\n') + 1);
+				auto wrapped = wrap(str.c_str(), lineBreak);
+				auto substrings = Break(wrapped);
+				for (auto& s : substrings)
+				{
+					stringies.push_back(s);
+				}
 			}
-			stringies.push_back(message);
+			else
+			{
+				stringies.push_back(str);
+			}
 		}
 	}
 
@@ -32,7 +37,24 @@ public:
 		return stringies;
 	}
 
-	/*std::string wrap(std::wstring text, size_t line_length)
+	std::vector<std::string> Break(std::string str)
+	{
+		std::string message = str;
+		std::vector<std::string> vecc;
+		if (message.size() >= 1)
+		{
+			while (message.find('\n') != std::string::npos)
+			{
+				std::string temp = message.substr(0, message.find('\n'));
+				vecc.push_back(temp);
+				message.erase(0, message.find('\n') + 1);
+			}
+			vecc.push_back(message);
+		}
+		return vecc;
+	}
+
+	std::string wrap(const char* text, size_t line_length = 72)
 	{
 		std::istringstream words(text);
 		std::ostringstream wrapped;
@@ -53,7 +75,7 @@ public:
 			}
 		}
 		return wrapped.str();
-	}*/
+	}
 
 private:
 	std::string message;

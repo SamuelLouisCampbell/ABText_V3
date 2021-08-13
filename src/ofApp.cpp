@@ -75,6 +75,8 @@ void ofApp::draw()
 			ABfontSmall = std::make_unique<ofTrueTypeFont>();
 			ABfontSmall->load("ABF.ttf", smallFontSize, true, true, true);
 		}
+		ImGui::InputInt("Large Line Break Number", &largeFontBreak);
+		ImGui::InputInt("Small Line Break Number", &smallFontBreak);
 		ImGui::InputFloat("Large Outline Stroke", &borderWidthLarge, 0.01f, 0.1f);
 		ImGui::InputFloat("Small Outline Stroke", &borderWidthSmall, 0.01f, 0.1f);
 		ImGui::InputFloat("Large Y Offset", &large_y_off, 0.1f, 1.0f);
@@ -128,7 +130,7 @@ void ofApp::draw()
 			ofClear(0);
 
 			ofSetColor(255, alpha);
-			StringHandling sh = { temp, currFontBreak };
+			StringHandling sh = { temp, size_t(!currLarge ? smallFontBreak : largeFontBreak) };
 			float totalHeight = sh.GetStringies().size() * lineHeight;
 			float Y_Start = center_y - (totalHeight / 2.0f) + lineHeight - (!currLarge ? small_y_off : large_y_off);
 
