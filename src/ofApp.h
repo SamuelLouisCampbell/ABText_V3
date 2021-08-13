@@ -3,6 +3,7 @@
 #include "ofMain.h"
 #include "TCPNet.h"
 #include "ofxSpout.h"
+#include "ofxImGui.h"
 
 class ofApp : public ofBaseApp{
 
@@ -46,14 +47,15 @@ class ofApp : public ofBaseApp{
 		ofTrueTypeFont ABfontSmall;
 		bool SizeControl(const std::wstring& ctrlStr);
 
-		//WORK SAVER
-		bool holdAndResend = false;
-		std::wstring holderString = L"";
-
+		//GUI
+		ofxImGui::Gui gui;
+		bool drawCross = false;
+		bool demoText = false;
+		bool changedSize = false;
 
 		ofRectangle rasterSize;
 		bool currLarge = false;
-		int largeFontSize = 384;
+		int largeFontSize = 360;
 		int smallFontSize = 128;
 		size_t smallFontBreak = 60;
 		size_t largeFontBreak = 12;

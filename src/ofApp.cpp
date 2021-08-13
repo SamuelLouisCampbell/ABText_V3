@@ -27,6 +27,9 @@ void ofApp::setup()
 	server->Start();
 	std::cout << "Server Started on Default Port: 6000" << std::endl;
 
+	//GUI
+	gui.setup();
+
 	//Font
 	ABfontLarge.load("ABF.ttf", largeFontSize, true, true, true);
 	ABfontSmall.load("ABF.ttf", smallFontSize, true, true, true);
@@ -54,15 +57,39 @@ void ofApp::update()
 //--------------------------------------------------------------
 void ofApp::draw()
 {
-	UpdateTime();
+	//Gui things
+	gui.begin();
+	if (ImGui::Begin("A&B Renderer Controls"))
+	{
+		ImGui::InputFloat("Small Outline Stroke", &borderWidth, 0.01f, 0.1f);
+		ImGui::Checkbox("Draw Center Cross", &drawCross);
+		ImGui::Checkbox("Draw Demo Text", &demoText);
+		if (ImGui::Button("Toggle Large Text"))
+		{
+			changedSize = true;
+			currLarge = !currLarge;
+		}
 
+		ImGui::End();
+	}
+	gui.end();
+
+
+	UpdateTime();
+	std::wstring temp;
 	//Get string from server
-	std::wstring temp = server->GetMessageStream();
-	//std::wstring temp = L"NULL....Hello You";
+	if (!demoText)
+	{
+		temp = server->GetMessageStream();
+	}
+	else
+	{
+		temp = L"NULL....Above & Beyond";
+	}
 	//parse out Control string and erase from message
 	std::wstring controlString = temp.substr(0, 8);
 	temp.erase(0, 8);
-	bool changedSize = false;
+
 	if (controlString != L"NULL....")
 	{
 		 changedSize = SizeControl(controlString);
@@ -172,7 +199,9 @@ void ofApp::draw()
 	holdingLastMsg ? outlineFBO_Fade.draw(0, 0, ofGetWindowWidth(), ofGetWindowHeight()) 
 		:
 		outlineFBO.draw(0, 0, ofGetWindowWidth(), ofGetWindowHeight());
-	DrawCenterCross();
+	
+	if(drawCross)
+		DrawCenterCross();
 
 }
 
