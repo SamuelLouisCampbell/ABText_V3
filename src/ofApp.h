@@ -44,6 +44,11 @@ class ofApp : public ofBaseApp{
 		ofTrueTypeFont ABfontSmall;
 		void SizeControl(const std::wstring& ctrlStr);
 
+		//WORK SAVER
+		bool holdAndResend = false;
+		std::wstring holderString = L"";
+
+
 		ofRectangle rasterSize;
 		bool currLarge = false;
 		int largeFontSize = 384;

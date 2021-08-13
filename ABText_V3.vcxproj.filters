@@ -245,9 +245,7 @@
     <ClInclude Include="src\StringHandling.h">
       <Filter>src</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="icon.rc" />
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="bin\data\shaders\geom.glsl">
@@ -259,5 +257,11 @@
     <None Include="bin\data\shaders\frag.glsl">
       <Filter>src\Shaders</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ABText_V3.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="abicon.ico" />
   </ItemGroup>
 </Project>

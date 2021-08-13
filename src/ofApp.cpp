@@ -190,8 +190,6 @@ void ofApp::draw()
 
 	//draw things to our screen
 	ofSetColor(255);
-	//shader.begin();
-	//ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
 	outlineFBO.draw(0, 0, ofGetWindowWidth(), ofGetWindowHeight());
 
 	//shader.end();
