@@ -12,7 +12,6 @@ void ofApp::setup()
 	ofSetBackgroundColor(0.0f);
 	ofSetLogLevel(OF_LOG_VERBOSE);
 
-	//TODO Load this shit from file;
 	//Font Stuff
 	rasterSize.setSize(3840, 1620);
 	center_x = rasterSize.getWidth() / 2.0f;
@@ -23,7 +22,7 @@ void ofApp::setup()
 	sendOutline.init("A&B Text Outline", rasterSize.getWidth(), rasterSize.getHeight());
 
 	//server things
-	server = std::make_unique<CustomServer>(6000);
+	server = std::make_unique<CustomServer>(port);
 	server->Start();
 	std::cout << "Server Started on Default Port: 6000" << std::endl;
 
@@ -31,8 +30,10 @@ void ofApp::setup()
 	gui.setup();
 
 	//Font
-	ABfontLarge.load("ABF.ttf", largeFontSize, true, true, true);
-	ABfontSmall.load("ABF.ttf", smallFontSize, true, true, true);
+	ABfontLarge = std::make_unique<ofTrueTypeFont>();
+	ABfontSmall = std::make_unique<ofTrueTypeFont>();
+	ABfontLarge->load("ABF.ttf", largeFontSize, true, true, true);
+	ABfontSmall->load("ABF.ttf", smallFontSize, true, true, true);
 
 	//Shader
 	outlineShader.setGeometryInputType(GL_LINES);
@@ -59,18 +60,33 @@ void ofApp::draw()
 {
 	//Gui things
 	gui.begin();
-	if (ImGui::Begin("A&B Renderer Controls"))
+	if (ImGui::BeginChild("A&B Renderer Controls"))
 	{
-		ImGui::InputFloat("Small Outline Stroke", &borderWidth, 0.01f, 0.1f);
+		if (ImGui::InputInt("!!! Large Font Size !!!", &largeFontSize))
+		{
+			ABfontLarge.release();
+			ABfontLarge = std::make_unique<ofTrueTypeFont>();
+			ABfontLarge->load("ABF.ttf", largeFontSize, true, true, true);
+		}
+		if (ImGui::InputInt("!!! Small Font Size !!!", &smallFontSize))
+		{
+			ABfontSmall.release();
+			ABfontSmall = std::make_unique<ofTrueTypeFont>();
+			ABfontSmall->load("ABF.ttf", smallFontSize, true, true, true);
+		}
+		ImGui::InputFloat("Large Outline Stroke", &borderWidthLarge, 0.01f, 0.1f);
+		ImGui::InputFloat("Small Outline Stroke", &borderWidthSmall, 0.01f, 0.1f);
+		ImGui::InputFloat("Large Y Offset", &large_y_off, 0.1f, 1.0f);
+		ImGui::InputFloat("small Y Offset", &small_y_off, 0.1f, 1.0f);
 		ImGui::Checkbox("Draw Center Cross", &drawCross);
 		ImGui::Checkbox("Draw Demo Text", &demoText);
 		if (ImGui::Button("Toggle Large Text"))
 		{
-			changedSize = true;
+			updateText = true;
 			currLarge = !currLarge;
 		}
 
-		ImGui::End();
+		ImGui::EndChild();
 	}
 	gui.end();
 
@@ -92,14 +108,14 @@ void ofApp::draw()
 
 	if (controlString != L"NULL....")
 	{
-		 changedSize = SizeControl(controlString);
+		 updateText = SizeControl(controlString);
 	}
 	//cleanFBO.allocate(rasterSize.getWidth(), rasterSize.getHeight(), GL_RGBA);
 	//outlineFBO.allocate(rasterSize.getWidth(), rasterSize.getHeight(), GL_RGBA);
 
 	//Draw Text etc.
-	float lineHeight = !currLarge ? ABfontSmall.getLineHeight() : ABfontLarge.getLineHeight();
-	if (temp != oldMessage || changedSize)
+	float lineHeight = !currLarge ? ABfontSmall->getLineHeight() : ABfontLarge->getLineHeight();
+	if (temp != oldMessage || updateText)
 	{
 		if (temp.size() > 0)
 		{
@@ -112,7 +128,7 @@ void ofApp::draw()
 			ofSetColor(255, alpha);
 			StringHandling sh = { temp, currFontBreak };
 			float totalHeight = sh.GetStringies().size() * lineHeight;
-			float Y_Start = center_y - (totalHeight / 2.0f) + lineHeight - curr_y_off;
+			float Y_Start = center_y - (totalHeight / 2.0f) + lineHeight - (!currLarge ? small_y_off : large_y_off);
 
 			//clear out previous font locations
 			fontLocs.clear();
@@ -120,16 +136,16 @@ void ofApp::draw()
 			for (auto& string : sh.GetStringies())
 			{
 				float X_start = !currLarge ?
-					ABfontSmall.getStringBoundingBox(wideToString(string), 0.0f, 0.0f).getWidth()
+					ABfontSmall->getStringBoundingBox(wideToString(string), 0.0f, 0.0f).getWidth()
 					:
-					ABfontLarge.getStringBoundingBox(wideToString(string), 0.0f, 0.0f).getWidth();
+					ABfontLarge->getStringBoundingBox(wideToString(string), 0.0f, 0.0f).getWidth();
 
 				fontLocs.push_back({ center_x - (X_start / 2.0f), Y_Start });
 				ofSetColor(0, 0, 0, alpha);
 				!currLarge ?
-					ABfontSmall.drawString(wideToString(string), center_x - (X_start / 2.0f), Y_Start)
+					ABfontSmall->drawString(wideToString(string), center_x - (X_start / 2.0f), Y_Start)
 					:
-					ABfontLarge.drawString(wideToString(string), center_x - (X_start / 2.0f), Y_Start);
+					ABfontLarge->drawString(wideToString(string), center_x - (X_start / 2.0f), Y_Start);
 				Y_Start += lineHeight;
 			}
 
@@ -143,14 +159,14 @@ void ofApp::draw()
 			outlineShader.begin();
 			outlineShader.setUniform4f("colorIn", 1.0f, 1.0f, 1.0f, 1.0f);
 			// set thickness of ribbons
-			outlineShader.setUniform1f("thickness", borderWidth);
+			outlineShader.setUniform1f("thickness", !currLarge ? borderWidthSmall : borderWidthLarge);
 			//ofTranslate(fontLocs[0].first, fontLocs[0].second);
 			for (int i = 0; i < sh.GetStringies().size(); i++)
 			{
 				fontPaths = !currLarge ?
-					ABfontSmall.getStringAsPoints(wideToString(sh.GetStringies()[i]))
+					ABfontSmall->getStringAsPoints(wideToString(sh.GetStringies()[i]))
 					:
-					ABfontLarge.getStringAsPoints(wideToString(sh.GetStringies()[i]));
+					ABfontLarge->getStringAsPoints(wideToString(sh.GetStringies()[i]));
 				for (int j = 0; j < fontPaths.size(); j++)
 				{
 					fontPaths[j].setStrokeWidth(1.0f);
@@ -202,6 +218,8 @@ void ofApp::draw()
 	
 	if(drawCross)
 		DrawCenterCross();
+
+	updateText = false;
 
 }
 
@@ -268,14 +286,12 @@ bool ofApp::SizeControl(const std::wstring& ctrlStr)
 	if (ctrlStr == L"LARGE...")
 	{
 		currLarge = true;
-		curr_y_off = large_y_off;
 		return true;
 	}
 
 	else if (ctrlStr == L"SMALL...")
 	{
 		currLarge = false;
-		curr_y_off = small_y_off;
 		return true;
 	}
 	return false;

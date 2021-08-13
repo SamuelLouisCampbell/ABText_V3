@@ -26,6 +26,7 @@ class ofApp : public ofBaseApp{
 		std::unique_ptr<CustomServer> server;
 		int netLooper = 60;
 		static constexpr int bufferSize = 1024;
+		int port = 6000;
 
 		//SPOUT
 		ofxSpout::Sender sendClean;
@@ -43,16 +44,17 @@ class ofApp : public ofBaseApp{
 		std::vector<std::pair<float, float>> fontLocs;
 
 		//Font & Text
-		ofTrueTypeFont ABfontLarge;
-		ofTrueTypeFont ABfontSmall;
+		std::unique_ptr<ofTrueTypeFont> ABfontLarge;
+		std::unique_ptr<ofTrueTypeFont> ABfontSmall;
 		bool SizeControl(const std::wstring& ctrlStr);
 
 		//GUI
 		ofxImGui::Gui gui;
 		bool drawCross = false;
 		bool demoText = false;
-		bool changedSize = false;
+		bool updateText = false;
 
+		
 		ofRectangle rasterSize;
 		bool currLarge = false;
 		int largeFontSize = 360;
@@ -63,10 +65,10 @@ class ofApp : public ofBaseApp{
 		size_t currFontBreak = smallFontBreak;
 		float center_x;
 		float center_y;
-		float small_y_off = 22.0f;
-		float large_y_off = 80.0f;
-		float curr_y_off = small_y_off;
-		float borderWidth = 2.0f;
+		float small_y_off = 40.0F;
+		float large_y_off = 115.0f;
+		float borderWidthSmall = 2.0f;
+		float borderWidthLarge = 4.0f;
 
 		ofColor oldFillCol;
 		bool currSmall = true;

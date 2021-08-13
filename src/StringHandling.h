@@ -14,6 +14,7 @@ public:
 	{
 		//TODO Line Wrapping
 
+
 		if (message.size() >= 1)
 		{
 			while (message.find('\n') != std::string::npos)
@@ -30,6 +31,29 @@ public:
 	{
 		return stringies;
 	}
+
+	/*std::string wrap(std::wstring text, size_t line_length)
+	{
+		std::istringstream words(text);
+		std::ostringstream wrapped;
+		std::string word;
+
+		if (words >> word) {
+			wrapped << word;
+			size_t space_left = line_length - word.length();
+			while (words >> word) {
+				if (space_left < word.length() + 1) {
+					wrapped << '\n' << word;
+					space_left = line_length - word.length();
+				}
+				else {
+					wrapped << ' ' << word;
+					space_left -= word.length() + 1;
+				}
+			}
+		}
+		return wrapped.str();
+	}*/
 
 private:
 	std::wstring message;
