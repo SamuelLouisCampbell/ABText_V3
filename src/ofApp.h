@@ -33,6 +33,8 @@ class ofApp : public ofBaseApp{
 		//FBO stuff
 		ofFbo cleanFBO;
 		ofFbo outlineFBO;
+		ofFbo cleanFBO_Fade;
+		ofFbo outlineFBO_Fade;
 
 		//shaders
 		ofShader outlineShader;

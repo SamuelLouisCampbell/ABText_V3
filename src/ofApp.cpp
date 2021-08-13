@@ -37,6 +37,11 @@ void ofApp::setup()
 	outlineShader.setGeometryOutputCount(6);
 	outlineShader.load("shaders/vert.glsl", "shaders/frag.glsl", "shaders/geom.glsl");
 
+	//Allocate Storage for FBO
+	cleanFBO.allocate(rasterSize.getWidth(), rasterSize.getHeight(), GL_RGBA);
+	outlineFBO.allocate(rasterSize.getWidth(), rasterSize.getHeight(), GL_RGBA);
+	cleanFBO_Fade.allocate(rasterSize.getWidth(), rasterSize.getHeight(), GL_RGBA);
+	outlineFBO_Fade.allocate(rasterSize.getWidth(), rasterSize.getHeight(), GL_RGBA);
 }
 
 //--------------------------------------------------------------
@@ -62,20 +67,20 @@ void ofApp::draw()
 	{
 		SizeControl(controlString);
 	}
-	cleanFBO.allocate(rasterSize.getWidth(), rasterSize.getHeight(), GL_RGBA);
-	outlineFBO.allocate(rasterSize.getWidth(), rasterSize.getHeight(), GL_RGBA);
+	//cleanFBO.allocate(rasterSize.getWidth(), rasterSize.getHeight(), GL_RGBA);
+	//outlineFBO.allocate(rasterSize.getWidth(), rasterSize.getHeight(), GL_RGBA);
 
 	//Draw Text etc.
 	float lineHeight = !currLarge ? ABfontSmall.getLineHeight() : ABfontLarge.getLineHeight();
 	if (temp.size() > 0)
 	{
+		oldMessage = temp;
+		alpha = 255;
 		//FBO clean
 		cleanFBO.begin();
-		ofClear(0, 0, 0, 0);
+		ofClear(0);
 
-		alpha = 255;
 		ofSetColor(255, alpha);
-		oldMessage = temp;
 		StringHandling sh = { temp, currFontBreak };
 		float totalHeight = sh.GetStringies().size() * lineHeight;
 		float Y_Start = center_y - (totalHeight / 2.0f) + lineHeight - curr_y_off;
@@ -102,9 +107,8 @@ void ofApp::draw()
 		//Finish clean things into Buffer.
 		cleanFBO.end();
 		//FBO outline
-		
 		outlineFBO.begin();
-		ofClear(0, 0, 0, 0);
+		ofClear(0);
 		
 		//Shader
 		outlineShader.begin();
@@ -128,71 +132,39 @@ void ofApp::draw()
 		outlineShader.end();
 		outlineFBO.end();
 		holdingLastMsg = false;
+		//Send SPOUT 
+		sendClean.send(cleanFBO.getTexture());
+		sendOutline.send(outlineFBO.getTexture());
 	}
 	else if (temp.size() == 0)
 	{
-		//FBO clean
-		cleanFBO.begin();
-		ofClear(0, 0, 0, 0);
-
+		//Clean FBO;
+		cleanFBO_Fade.begin();
+		ofClear(0);
 		ofSetColor(255, alpha);
+		cleanFBO.draw(0,0, rasterSize.getWidth(), rasterSize.getHeight());
+		cleanFBO_Fade.end();
+
+		//Outline FBO;
+		outlineFBO_Fade.begin();
+		ofClear(0);
+		ofSetColor(255, alpha);
+		outlineFBO.draw(0, 0, rasterSize.getWidth(), rasterSize.getHeight());
+		outlineFBO_Fade.end();
+
+		//Send SPOUT 
+		sendClean.send(cleanFBO_Fade.getTexture());
+		sendOutline.send(outlineFBO_Fade.getTexture());
+
 		holdingLastMsg = true;
-		StringHandling sh = { oldMessage, currFontBreak };
-		float totalHeight = sh.GetStringies().size() * lineHeight;
-		float Y_Start = center_y - (totalHeight / 2.0f) + lineHeight - curr_y_off;
-		
-		for (auto& string : sh.GetStringies())
-		{
-			//pre calc size of text
-			float X_start = !currLarge ?
-				ABfontSmall.getStringBoundingBox(wideToString(string), 0.0f, 0.0f).getWidth()
-				:
-				ABfontLarge.getStringBoundingBox(wideToString(string), 0.0f, 0.0f).getWidth();
-			ofSetColor(0, 0, 0, alpha);
-			!currLarge ?
-				ABfontSmall.drawString(wideToString(string), center_x - (X_start / 2.0f), Y_Start)
-				:
-				ABfontLarge.drawString(wideToString(string), center_x - (X_start / 2.0f), Y_Start);
-			Y_Start += lineHeight;
-		}
-
-		cleanFBO.end();
-		outlineFBO.begin();
-		ofClear(0, 0, 0, 0);
-
-		//Shader
-		outlineShader.begin();
-		outlineShader.setUniform4f("colorIn", (1.0f / 255.0f)* alpha, (1.0f / 255.0f)* alpha, (1.0f / 255.0f)* alpha, 1.0f);
-		// set thickness of ribbons
-		outlineShader.setUniform1f("thickness", borderWidth);
-		//ofTranslate(fontLocs[0].first, fontLocs[0].second);
-		for (int i = 0; i < sh.GetStringies().size(); i++)
-		{
-			fontPaths = !currLarge ?
-				ABfontSmall.getStringAsPoints(wideToString(sh.GetStringies()[i]))
-				:
-				ABfontLarge.getStringAsPoints(wideToString(sh.GetStringies()[i]));
-			for (int j = 0; j < fontPaths.size(); j++)
-			{
-				fontPaths[j].setStrokeWidth(1.0f);
-				fontPaths[j].draw(fontLocs[i].first, fontLocs[i].second);
-			}
-
-		}
-		outlineShader.end();
-		outlineFBO.end();
 		alpha -= alphaTime;
 	}
 
-	//Send SPOUT 
-	sendClean.send(cleanFBO.getTexture());
-	sendOutline.send(outlineFBO.getTexture());
-
 	//draw things to our screen
 	ofSetColor(255);
-	outlineFBO.draw(0, 0, ofGetWindowWidth(), ofGetWindowHeight());
-
-	//shader.end();
+	holdingLastMsg ? outlineFBO_Fade.draw(0, 0, ofGetWindowWidth(), ofGetWindowHeight()) 
+		:
+		outlineFBO.draw(0, 0, ofGetWindowWidth(), ofGetWindowHeight());
 	DrawCenterCross();
 
 }
