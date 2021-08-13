@@ -44,7 +44,7 @@ class ofApp : public ofBaseApp{
 		//Font & Text
 		ofTrueTypeFont ABfontLarge;
 		ofTrueTypeFont ABfontSmall;
-		void SizeControl(const std::wstring& ctrlStr);
+		bool SizeControl(const std::wstring& ctrlStr);
 
 		//WORK SAVER
 		bool holdAndResend = false;

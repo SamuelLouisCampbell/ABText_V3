@@ -62,104 +62,111 @@ void ofApp::draw()
 	//parse out Control string and erase from message
 	std::wstring controlString = temp.substr(0, 8);
 	temp.erase(0, 8);
-
+	bool changedSize = false;
 	if (controlString != L"NULL....")
 	{
-		SizeControl(controlString);
+		 changedSize = SizeControl(controlString);
 	}
 	//cleanFBO.allocate(rasterSize.getWidth(), rasterSize.getHeight(), GL_RGBA);
 	//outlineFBO.allocate(rasterSize.getWidth(), rasterSize.getHeight(), GL_RGBA);
 
 	//Draw Text etc.
 	float lineHeight = !currLarge ? ABfontSmall.getLineHeight() : ABfontLarge.getLineHeight();
-	if (temp.size() > 0)
+	if (temp != oldMessage || changedSize)
 	{
-		oldMessage = temp;
-		alpha = 255;
-		//FBO clean
-		cleanFBO.begin();
-		ofClear(0);
-
-		ofSetColor(255, alpha);
-		StringHandling sh = { temp, currFontBreak };
-		float totalHeight = sh.GetStringies().size() * lineHeight;
-		float Y_Start = center_y - (totalHeight / 2.0f) + lineHeight - curr_y_off;
-		
-		//clear out previous font locations
-		fontLocs.clear();
-
-		for (auto& string : sh.GetStringies())
+		if (temp.size() > 0)
 		{
-			float X_start = !currLarge ?
-				ABfontSmall.getStringBoundingBox(wideToString(string), 0.0f, 0.0f).getWidth()
-				:
-				ABfontLarge.getStringBoundingBox(wideToString(string), 0.0f, 0.0f).getWidth();
+			oldMessage = temp;
+			alpha = 255;
+			//FBO clean
+			cleanFBO.begin();
+			ofClear(0);
 
-			fontLocs.push_back({ center_x - (X_start / 2.0f), Y_Start });
-			ofSetColor(0, 0, 0, alpha);
-			!currLarge ?
-				ABfontSmall.drawString(wideToString(string), center_x - (X_start / 2.0f), Y_Start)
-				:
-				ABfontLarge.drawString(wideToString(string), center_x - (X_start / 2.0f), Y_Start);
-			Y_Start += lineHeight;
-		}
+			ofSetColor(255, alpha);
+			StringHandling sh = { temp, currFontBreak };
+			float totalHeight = sh.GetStringies().size() * lineHeight;
+			float Y_Start = center_y - (totalHeight / 2.0f) + lineHeight - curr_y_off;
 
-		//Finish clean things into Buffer.
-		cleanFBO.end();
-		//FBO outline
-		outlineFBO.begin();
-		ofClear(0);
-		
-		//Shader
-		outlineShader.begin();
-		outlineShader.setUniform4f("colorIn", 1.0f, 1.0f, 1.0f, 1.0f);
-		// set thickness of ribbons
-		outlineShader.setUniform1f("thickness", borderWidth);
-		//ofTranslate(fontLocs[0].first, fontLocs[0].second);
-		for (int i = 0; i < sh.GetStringies().size(); i++)
-		{
-			fontPaths = !currLarge ?
-				ABfontSmall.getStringAsPoints(wideToString(sh.GetStringies()[i]))
-				:
-				ABfontLarge.getStringAsPoints(wideToString(sh.GetStringies()[i]));
-			for (int j = 0; j < fontPaths.size(); j++)
+			//clear out previous font locations
+			fontLocs.clear();
+
+			for (auto& string : sh.GetStringies())
 			{
-				fontPaths[j].setStrokeWidth(1.0f);
-				fontPaths[j].draw(fontLocs[i].first, fontLocs[i].second);
+				float X_start = !currLarge ?
+					ABfontSmall.getStringBoundingBox(wideToString(string), 0.0f, 0.0f).getWidth()
+					:
+					ABfontLarge.getStringBoundingBox(wideToString(string), 0.0f, 0.0f).getWidth();
+
+				fontLocs.push_back({ center_x - (X_start / 2.0f), Y_Start });
+				ofSetColor(0, 0, 0, alpha);
+				!currLarge ?
+					ABfontSmall.drawString(wideToString(string), center_x - (X_start / 2.0f), Y_Start)
+					:
+					ABfontLarge.drawString(wideToString(string), center_x - (X_start / 2.0f), Y_Start);
+				Y_Start += lineHeight;
 			}
 
+			//Finish clean things into Buffer.
+			cleanFBO.end();
+			//FBO outline
+			outlineFBO.begin();
+			ofClear(0);
+
+			//Shader
+			outlineShader.begin();
+			outlineShader.setUniform4f("colorIn", 1.0f, 1.0f, 1.0f, 1.0f);
+			// set thickness of ribbons
+			outlineShader.setUniform1f("thickness", borderWidth);
+			//ofTranslate(fontLocs[0].first, fontLocs[0].second);
+			for (int i = 0; i < sh.GetStringies().size(); i++)
+			{
+				fontPaths = !currLarge ?
+					ABfontSmall.getStringAsPoints(wideToString(sh.GetStringies()[i]))
+					:
+					ABfontLarge.getStringAsPoints(wideToString(sh.GetStringies()[i]));
+				for (int j = 0; j < fontPaths.size(); j++)
+				{
+					fontPaths[j].setStrokeWidth(1.0f);
+					fontPaths[j].draw(fontLocs[i].first, fontLocs[i].second);
+				}
+
+			}
+			outlineShader.end();
+			outlineFBO.end();
+			holdingLastMsg = false;
+			//Send SPOUT 
+			sendClean.send(cleanFBO.getTexture());
+			sendOutline.send(outlineFBO.getTexture());
 		}
-		outlineShader.end();
-		outlineFBO.end();
-		holdingLastMsg = false;
-		//Send SPOUT 
-		sendClean.send(cleanFBO.getTexture());
-		sendOutline.send(outlineFBO.getTexture());
+		else if (temp.size() == 0)
+		{
+			//Clean FBO;
+			cleanFBO_Fade.begin();
+			ofClear(0);
+			ofSetColor(255, alpha);
+			cleanFBO.draw(0, 0, rasterSize.getWidth(), rasterSize.getHeight());
+			cleanFBO_Fade.end();
+
+			//Outline FBO;
+			outlineFBO_Fade.begin();
+			ofClear(0);
+			ofSetColor(255, alpha);
+			outlineFBO.draw(0, 0, rasterSize.getWidth(), rasterSize.getHeight());
+			outlineFBO_Fade.end();
+
+			//Send SPOUT 
+			sendClean.send(cleanFBO_Fade.getTexture());
+			sendOutline.send(outlineFBO_Fade.getTexture());
+
+			holdingLastMsg = true;
+			alpha -= alphaTime;
+			if (alpha < 0)
+			{
+				alpha = 255;
+				oldMessage = temp;
+			}
+		}
 	}
-	else if (temp.size() == 0)
-	{
-		//Clean FBO;
-		cleanFBO_Fade.begin();
-		ofClear(0);
-		ofSetColor(255, alpha);
-		cleanFBO.draw(0,0, rasterSize.getWidth(), rasterSize.getHeight());
-		cleanFBO_Fade.end();
-
-		//Outline FBO;
-		outlineFBO_Fade.begin();
-		ofClear(0);
-		ofSetColor(255, alpha);
-		outlineFBO.draw(0, 0, rasterSize.getWidth(), rasterSize.getHeight());
-		outlineFBO_Fade.end();
-
-		//Send SPOUT 
-		sendClean.send(cleanFBO_Fade.getTexture());
-		sendOutline.send(outlineFBO_Fade.getTexture());
-
-		holdingLastMsg = true;
-		alpha -= alphaTime;
-	}
-
 	//draw things to our screen
 	ofSetColor(255);
 	holdingLastMsg ? outlineFBO_Fade.draw(0, 0, ofGetWindowWidth(), ofGetWindowHeight()) 
@@ -227,17 +234,20 @@ void ofApp::RunHealthCheck()
 	netLooper++;
 }
 
-void ofApp::SizeControl(const std::wstring& ctrlStr)
+bool ofApp::SizeControl(const std::wstring& ctrlStr)
 {
 	if (ctrlStr == L"LARGE...")
 	{
 		currLarge = true;
 		curr_y_off = large_y_off;
+		return true;
 	}
 
 	else if (ctrlStr == L"SMALL...")
 	{
 		currLarge = false;
 		curr_y_off = small_y_off;
+		return true;
 	}
+	return false;
 }
