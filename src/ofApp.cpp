@@ -60,6 +60,7 @@ void ofApp::draw()
 {
 	//Gui things
 	gui.begin();
+	ImGui::Begin("A&B Renderer Controls");
 	if (ImGui::BeginChild("A&B Renderer Controls"))
 	{
 		if (ImGui::InputInt("!!! Large Font Size !!!", &largeFontSize))
@@ -88,6 +89,7 @@ void ofApp::draw()
 
 		ImGui::EndChild();
 	}
+	ImGui::End();
 	gui.end();
 
 
