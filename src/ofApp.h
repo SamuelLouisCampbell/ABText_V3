@@ -40,12 +40,14 @@ class ofApp : public ofBaseApp{
 		std::vector<std::pair<float, float>> fontLocs;
 
 		//Font & Text
-		ofTrueTypeFont ABfont;
+		ofTrueTypeFont ABfontLarge;
+		ofTrueTypeFont ABfontSmall;
 		void SizeControl(const std::wstring& ctrlStr);
 
 		ofRectangle rasterSize;
-		float smallFontSize = 256.0f;
-		float largeFontSize = 256.0f;
+		bool currLarge = false;
+		int largeFontSize = 384;
+		int smallFontSize = 128;
 		size_t smallFontBreak = 60;
 		size_t largeFontBreak = 12;
 		float currFontSize = smallFontSize;

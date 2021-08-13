@@ -14,7 +14,7 @@ void ofApp::setup()
 
 	//TODO Load this shit from file;
 	//Font Stuff
-	rasterSize.setSize(7680.0f, 2160.0f);
+	rasterSize.setSize(3840, 1620);
 	center_x = rasterSize.getWidth() / 2.0f;
 	center_y = rasterSize.getHeight() / 2.0f;
 #
@@ -28,7 +28,8 @@ void ofApp::setup()
 	std::cout << "Server Started on Default Port: 6000" << std::endl;
 
 	//Font
-	ABfont.load("ABF.ttf", 256, true, true, true);
+	ABfontLarge.load("ABF.ttf", largeFontSize, true, true, true);
+	ABfontSmall.load("ABF.ttf", smallFontSize, true, true, true);
 
 	//Shader
 	outlineShader.setGeometryInputType(GL_LINES);
@@ -65,7 +66,7 @@ void ofApp::draw()
 	outlineFBO.allocate(rasterSize.getWidth(), rasterSize.getHeight(), GL_RGBA);
 
 	//Draw Text etc.
-	float lineHeight = ABfont.getLineHeight();
+	float lineHeight = !currLarge ? ABfontSmall.getLineHeight() : ABfontLarge.getLineHeight();
 	if (temp.size() > 0)
 	{
 		//FBO clean
@@ -84,10 +85,17 @@ void ofApp::draw()
 
 		for (auto& string : sh.GetStringies())
 		{
-			float X_start = ABfont.getStringBoundingBox(wideToString(string), 0.0f, 0.0f).getWidth();
+			float X_start = !currLarge ?
+				ABfontSmall.getStringBoundingBox(wideToString(string), 0.0f, 0.0f).getWidth()
+				:
+				ABfontLarge.getStringBoundingBox(wideToString(string), 0.0f, 0.0f).getWidth();
+
 			fontLocs.push_back({ center_x - (X_start / 2.0f), Y_Start });
 			ofSetColor(0, 128, 0);
-			ABfont.drawString(wideToString(string), center_x - (X_start / 2.0f), Y_Start);
+			!currLarge ?
+				ABfontSmall.drawString(wideToString(string), center_x - (X_start / 2.0f), Y_Start)
+				:
+				ABfontLarge.drawString(wideToString(string), center_x - (X_start / 2.0f), Y_Start);
 			Y_Start += lineHeight;
 		}
 
@@ -97,7 +105,7 @@ void ofApp::draw()
 		
 		outlineFBO.begin();
 		ofClear(0, 0, 0, 0);
-
+		
 		//Shader
 		outlineShader.begin();
 		outlineShader.setUniform4f("colorIn", 1.0f, 1.0f, 1.0f, 1.0f);
@@ -106,7 +114,10 @@ void ofApp::draw()
 		//ofTranslate(fontLocs[0].first, fontLocs[0].second);
 		for (int i = 0; i < sh.GetStringies().size(); i++)
 		{
-			fontPaths = ABfont.getStringAsPoints(wideToString(sh.GetStringies()[i]));
+			fontPaths = !currLarge ?
+				ABfontSmall.getStringAsPoints(wideToString(sh.GetStringies()[i]))
+				:
+				ABfontLarge.getStringAsPoints(wideToString(sh.GetStringies()[i]));
 			for (int j = 0; j < fontPaths.size(); j++)
 			{
 				fontPaths[j].setStrokeWidth(1.0f);
@@ -133,9 +144,15 @@ void ofApp::draw()
 		for (auto& string : sh.GetStringies())
 		{
 			//pre calc size of text
-			float X_start = ABfont.getStringBoundingBox(wideToString(string), 0.0f, 0.0f).getWidth();
+			float X_start = !currLarge ?
+				ABfontSmall.getStringBoundingBox(wideToString(string), 0.0f, 0.0f).getWidth()
+				:
+				ABfontLarge.getStringBoundingBox(wideToString(string), 0.0f, 0.0f).getWidth();
 			Y_Start += lineHeight;
-			ABfont.drawString(wideToString(string), center_x - (X_start / 2.0f), Y_Start);
+			!currLarge ?
+				ABfontSmall.drawString(wideToString(string), center_x - (X_start / 2.0f), Y_Start)
+				:
+				ABfontLarge.drawString(wideToString(string), center_x - (X_start / 2.0f), Y_Start);
 		}
 
 		cleanFBO.end();
@@ -144,13 +161,16 @@ void ofApp::draw()
 
 		//Shader
 		outlineShader.begin();
-		outlineShader.setUniform4f("colorIn", 1.0f, 1.0f, 1.0f, 1.0f);
+		outlineShader.setUniform4f("colorIn", 1.0f, 1.0f, 1.0f, (1.0f * alpha));
 		// set thickness of ribbons
 		outlineShader.setUniform1f("thickness", 4.0f);
 		//ofTranslate(fontLocs[0].first, fontLocs[0].second);
 		for (int i = 0; i < sh.GetStringies().size(); i++)
 		{
-			fontPaths = ABfont.getStringAsPoints(wideToString(sh.GetStringies()[i]));
+			fontPaths = !currLarge ?
+				ABfontSmall.getStringAsPoints(wideToString(sh.GetStringies()[i]))
+				:
+				ABfontLarge.getStringAsPoints(wideToString(sh.GetStringies()[i]));
 			for (int j = 0; j < fontPaths.size(); j++)
 			{
 				fontPaths[j].setStrokeWidth(1.0f);
@@ -240,15 +260,13 @@ void ofApp::SizeControl(const std::wstring& ctrlStr)
 {
 	if (ctrlStr == L"LARGE...")
 	{
-		//currFontSize = largeFontSize;
-		//currFontBreak = largeFontBreak;
+		currLarge = true;
 		curr_y_off = large_y_off;
 	}
 
 	else if (ctrlStr == L"SMALL...")
 	{
-		//currFontSize = smallFontSize;
-		//currFontBreak = smallFontBreak;
+		currLarge = false;
 		curr_y_off = small_y_off;
 	}
 }
