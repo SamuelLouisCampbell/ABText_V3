@@ -46,7 +46,7 @@ class ofApp : public ofBaseApp{
 		//Font & Text
 		std::unique_ptr<ofTrueTypeFont> ABfontLarge;
 		std::unique_ptr<ofTrueTypeFont> ABfontSmall;
-		bool SizeControl(const std::wstring& ctrlStr);
+		bool SizeControl(const std::string& ctrlStr);
 
 		//GUI
 		ofxImGui::Gui gui;
@@ -72,7 +72,7 @@ class ofApp : public ofBaseApp{
 
 		ofColor oldFillCol;
 		bool currSmall = true;
-		std::wstring oldMessage = L"";
+		std::string oldMessage = "";
 		bool holdingLastMsg = false;
 		int alpha = 255;
 		int alphaTime = 6;

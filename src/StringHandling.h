@@ -7,7 +7,7 @@
 class StringHandling
 {
 public:
-	StringHandling(std::wstring str, const size_t lineBreak)
+	StringHandling(std::string str, const size_t lineBreak)
 		:
 		message(str),
 		maxChars(lineBreak)
@@ -19,7 +19,7 @@ public:
 		{
 			while (message.find('\n') != std::string::npos)
 			{
-				std::wstring temp = message.substr(0, message.find('\n'));
+				std::string temp = message.substr(0, message.find('\n'));
 				stringies.push_back(temp);
 				message.erase(0, message.find('\n') + 1);
 			}
@@ -27,7 +27,7 @@ public:
 		}
 	}
 
-	std::vector<std::wstring> GetStringies() const
+	std::vector<std::string> GetStringies() const
 	{
 		return stringies;
 	}
@@ -56,8 +56,8 @@ public:
 	}*/
 
 private:
-	std::wstring message;
-	std::vector<std::wstring> stringies;
+	std::string message;
+	std::vector<std::string> stringies;
 	size_t maxChars;
 
 

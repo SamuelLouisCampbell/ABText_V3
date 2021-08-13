@@ -94,21 +94,21 @@ void ofApp::draw()
 
 
 	UpdateTime();
-	std::wstring temp;
+	std::string temp;
 	//Get string from server
 	if (!demoText)
 	{
-		temp = server->GetMessageStream();
+		temp = wideToString(server->GetMessageStream());
 	}
 	else
 	{
-		temp = L"NULL....Above & Beyond";
+		temp = "NULL....Above & Beyond";
 	}
 	//parse out Control string and erase from message
-	std::wstring controlString = temp.substr(0, 8);
+	std::string controlString = temp.substr(0, 8);
 	temp.erase(0, 8);
 
-	if (controlString != L"NULL....")
+	if (controlString != "NULL....")
 	{
 		 updateText = SizeControl(controlString);
 	}
@@ -138,16 +138,17 @@ void ofApp::draw()
 			for (auto& string : sh.GetStringies())
 			{
 				float X_start = !currLarge ?
-					ABfontSmall->getStringBoundingBox(wideToString(string), 0.0f, 0.0f).getWidth()
+					ABfontSmall->getStringBoundingBox(string, 0.0f, 0.0f).getWidth()
 					:
-					ABfontLarge->getStringBoundingBox(wideToString(string), 0.0f, 0.0f).getWidth();
+					ABfontLarge->getStringBoundingBox(string, 0.0f, 0.0f).getWidth();
 
 				fontLocs.push_back({ center_x - (X_start / 2.0f), Y_Start });
 				ofSetColor(0, 0, 0, alpha);
 				!currLarge ?
-					ABfontSmall->drawString(wideToString(string), center_x - (X_start / 2.0f), Y_Start)
+					ABfontSmall->drawString(string, center_x - (X_start / 2.0f), Y_Start)
 					:
-					ABfontLarge->drawString(wideToString(string), center_x - (X_start / 2.0f), Y_Start);
+					ABfontLarge->drawString(string, center_x - (X_start / 2.0f), Y_Start);
+
 				Y_Start += lineHeight;
 			}
 
@@ -166,9 +167,9 @@ void ofApp::draw()
 			for (int i = 0; i < sh.GetStringies().size(); i++)
 			{
 				fontPaths = !currLarge ?
-					ABfontSmall->getStringAsPoints(wideToString(sh.GetStringies()[i]))
+					ABfontSmall->getStringAsPoints(sh.GetStringies()[i])
 					:
-					ABfontLarge->getStringAsPoints(wideToString(sh.GetStringies()[i]));
+					ABfontLarge->getStringAsPoints(sh.GetStringies()[i]);
 				for (int j = 0; j < fontPaths.size(); j++)
 				{
 					fontPaths[j].setStrokeWidth(1.0f);
@@ -283,15 +284,15 @@ void ofApp::RunHealthCheck()
 	netLooper++;
 }
 
-bool ofApp::SizeControl(const std::wstring& ctrlStr)
+bool ofApp::SizeControl(const std::string& ctrlStr)
 {
-	if (ctrlStr == L"LARGE...")
+	if (ctrlStr == "LARGE...")
 	{
 		currLarge = true;
 		return true;
 	}
 
-	else if (ctrlStr == L"SMALL...")
+	else if (ctrlStr == "SMALL...")
 	{
 		currLarge = false;
 		return true;
