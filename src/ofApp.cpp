@@ -91,7 +91,7 @@ void ofApp::draw()
 				ABfontLarge.getStringBoundingBox(wideToString(string), 0.0f, 0.0f).getWidth();
 
 			fontLocs.push_back({ center_x - (X_start / 2.0f), Y_Start });
-			ofSetColor(0, 128, 0);
+			ofSetColor(0, 0, 0, alpha);
 			!currLarge ?
 				ABfontSmall.drawString(wideToString(string), center_x - (X_start / 2.0f), Y_Start)
 				:
@@ -110,7 +110,7 @@ void ofApp::draw()
 		outlineShader.begin();
 		outlineShader.setUniform4f("colorIn", 1.0f, 1.0f, 1.0f, 1.0f);
 		// set thickness of ribbons
-		outlineShader.setUniform1f("thickness", 4.0f);
+		outlineShader.setUniform1f("thickness", borderWidth);
 		//ofTranslate(fontLocs[0].first, fontLocs[0].second);
 		for (int i = 0; i < sh.GetStringies().size(); i++)
 		{
@@ -139,7 +139,7 @@ void ofApp::draw()
 		holdingLastMsg = true;
 		StringHandling sh = { oldMessage, currFontBreak };
 		float totalHeight = sh.GetStringies().size() * lineHeight;
-		float Y_Start = center_y - (totalHeight / 2.0f) - (lineHeight / 2.0f) + curr_y_off;
+		float Y_Start = center_y - (totalHeight / 2.0f) + lineHeight - curr_y_off;
 		
 		for (auto& string : sh.GetStringies())
 		{
@@ -148,11 +148,12 @@ void ofApp::draw()
 				ABfontSmall.getStringBoundingBox(wideToString(string), 0.0f, 0.0f).getWidth()
 				:
 				ABfontLarge.getStringBoundingBox(wideToString(string), 0.0f, 0.0f).getWidth();
-			Y_Start += lineHeight;
+			ofSetColor(0, 0, 0, alpha);
 			!currLarge ?
 				ABfontSmall.drawString(wideToString(string), center_x - (X_start / 2.0f), Y_Start)
 				:
 				ABfontLarge.drawString(wideToString(string), center_x - (X_start / 2.0f), Y_Start);
+			Y_Start += lineHeight;
 		}
 
 		cleanFBO.end();
@@ -161,9 +162,9 @@ void ofApp::draw()
 
 		//Shader
 		outlineShader.begin();
-		outlineShader.setUniform4f("colorIn", 1.0f, 1.0f, 1.0f, (1.0f * alpha));
+		outlineShader.setUniform4f("colorIn", (1.0f / 255.0f)* alpha, (1.0f / 255.0f)* alpha, (1.0f / 255.0f)* alpha, 1.0f);
 		// set thickness of ribbons
-		outlineShader.setUniform1f("thickness", 4.0f);
+		outlineShader.setUniform1f("thickness", borderWidth);
 		//ofTranslate(fontLocs[0].first, fontLocs[0].second);
 		for (int i = 0; i < sh.GetStringies().size(); i++)
 		{
