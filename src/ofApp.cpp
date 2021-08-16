@@ -8,9 +8,8 @@ void ofApp::setup()
 	ofEnableAlphaBlending();
 	ofSetVerticalSync(true);
 	ofSetFrameRate(30);
-	//ofDisableAntiAliasing();
 	ofSetBackgroundColor(0.0f);
-	ofSetLogLevel(OF_LOG_VERBOSE);
+
 
 	//Font Stuff
 	rasterSize.setSize(3840, 1620);
@@ -24,7 +23,7 @@ void ofApp::setup()
 	//server things
 	server = std::make_unique<CustomServer>(port);
 	server->Start();
-	std::cout << "Server Started on Default Port: 6000" << std::endl;
+	std::cout << "Server Started on Default Port: 60000" << std::endl;
 
 	//GUI
 	gui.setup();
@@ -114,9 +113,7 @@ void ofApp::draw()
 	{
 		 updateText = SizeControl(controlString);
 	}
-	//cleanFBO.allocate(rasterSize.getWidth(), rasterSize.getHeight(), GL_RGBA);
-	//outlineFBO.allocate(rasterSize.getWidth(), rasterSize.getHeight(), GL_RGBA);
-
+	
 	//Draw Text etc.
 	float lineHeight = !currLarge ? ABfontSmall->getLineHeight() : ABfontLarge->getLineHeight();
 	if (temp != oldMessage || updateText)
@@ -212,6 +209,7 @@ void ofApp::draw()
 			{
 				alpha = 255;
 				oldMessage = temp;
+				clearFBO_All();
 			}
 		}
 	}
@@ -271,6 +269,42 @@ void ofApp::UpdateTime()
 		accuFrame = 0;
 	}
 
+}
+
+
+void ofApp::clearFBO()
+{
+	cleanFBO.begin();
+	ofClear(0);
+	cleanFBO.end();
+	//cleanFBO_Fade.begin();
+	//ofClear(0);
+	//cleanFBO_Fade.end();
+
+	outlineFBO.begin();
+	ofClear(0);
+	outlineFBO.end();
+	/*outlineFBO_Fade.begin();
+	ofClear(0);
+	outlineFBO_Fade.end();*/
+
+}
+
+void ofApp::clearFBO_All()
+{
+	cleanFBO.begin();
+	ofClear(0);
+	cleanFBO.end();
+	cleanFBO_Fade.begin();
+	ofClear(0);
+	cleanFBO_Fade.end();
+
+	outlineFBO.begin();
+	ofClear(0);
+	outlineFBO.end();
+	outlineFBO_Fade.begin();
+	ofClear(0);
+	outlineFBO_Fade.end();
 }
 
 void ofApp::RunHealthCheck()

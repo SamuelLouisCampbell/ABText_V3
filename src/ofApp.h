@@ -12,11 +12,13 @@ class ofApp : public ofBaseApp{
 		void update();
 		void draw();	
 		void exit();
-
+private:
 		//Utility
 		void DrawCenterCross();
 		std::string wideToString(const std::wstring wStr);
 		void UpdateTime();
+		void clearFBO();
+		void clearFBO_All();
 		ofFpsCounter fps;
 		float accuTime = 0.0f;
 		int accuFrame = 0;
@@ -26,7 +28,7 @@ class ofApp : public ofBaseApp{
 		std::unique_ptr<CustomServer> server;
 		int netLooper = 60;
 		static constexpr int bufferSize = 1024;
-		int port = 6000;
+		int port = 60000;
 
 		//SPOUT
 		ofxSpout::Sender sendClean;
