@@ -162,7 +162,7 @@ void ofApp::draw()
 			outlineShader.setUniform4f("colorIn", 1.0f, 1.0f, 1.0f, 1.0f);
 			// set thickness of ribbons
 			outlineShader.setUniform1f("thickness", !currLarge ? borderWidthSmall : borderWidthLarge);
-			//ofTranslate(fontLocs[0].first, fontLocs[0].second);
+
 			for (int i = 0; i < sh.GetStringies().size(); i++)
 			{
 				fontPaths = !currLarge ?
@@ -182,6 +182,7 @@ void ofApp::draw()
 			//Send SPOUT 
 			sendClean.send(cleanFBO.getTexture());
 			sendOutline.send(outlineFBO.getTexture());
+			
 		}
 		else if (temp.size() == 0)
 		{
@@ -199,10 +200,6 @@ void ofApp::draw()
 			outlineFBO.draw(0, 0, rasterSize.getWidth(), rasterSize.getHeight());
 			outlineFBO_Fade.end();
 
-			//Send SPOUT 
-			sendClean.send(cleanFBO_Fade.getTexture());
-			sendOutline.send(outlineFBO_Fade.getTexture());
-
 			holdingLastMsg = true;
 			alpha -= alphaTime;
 			if (alpha < 0)
@@ -211,8 +208,14 @@ void ofApp::draw()
 				oldMessage = temp;
 				clearFBO_All();
 			}
+			//Send SPOUT 
+			sendClean.send(cleanFBO_Fade.getTexture());
+			sendOutline.send(outlineFBO_Fade.getTexture());
 		}
 	}
+
+
+
 	//draw things to our screen
 	ofSetColor(255);
 	holdingLastMsg ? outlineFBO_Fade.draw(0, 0, ofGetWindowWidth(), ofGetWindowHeight()) 
