@@ -263,6 +263,9 @@
     <None Include="bin\data\shaders\frag.glsl" />
     <None Include="bin\data\shaders\geom.glsl" />
     <None Include="bin\data\shaders\vert.glsl" />
+    <None Include="src\frag.glsl" />
+    <None Include="src\geom.glsl" />
+    <None Include="src\vert.glsl" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ABText_V3.rc" />

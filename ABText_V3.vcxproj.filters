@@ -257,6 +257,15 @@
     <None Include="bin\data\shaders\frag.glsl">
       <Filter>src\Shaders</Filter>
     </None>
+    <None Include="src\geom.glsl">
+      <Filter>src</Filter>
+    </None>
+    <None Include="src\vert.glsl">
+      <Filter>src</Filter>
+    </None>
+    <None Include="src\frag.glsl">
+      <Filter>src</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ABText_V3.rc" />
