@@ -12,7 +12,6 @@ public:
 		message(str),
 		maxChars(lineBreak)
 	{
-		//TODO Line Wrapping
 		auto tempstringies = Break(message);
 		for (auto& str : tempstringies)
 		{
