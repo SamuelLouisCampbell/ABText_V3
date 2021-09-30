@@ -101,6 +101,7 @@ protected:
 			MultiByteToWideChar(CP_UTF8, 0, str.c_str(), -1, wstr, wcharsNum);
 			messagestr = wstr;
 			delete wstr;
+			info << str;
 			information = info.str();
 			break;
 		}

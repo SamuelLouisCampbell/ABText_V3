@@ -55,7 +55,10 @@ private:
 		bool drawCross = false;
 		bool demoText = false;
 		bool updateText = false;
-
+		//terminal
+		std::vector<std::string> terminalEntries;
+		std::string oldTermMessage = "";
+		
 		
 		ofRectangle rasterSize;
 		bool currLarge = false;
