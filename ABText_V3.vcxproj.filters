@@ -88,6 +88,10 @@
     <ClCompile Include="..\..\..\addons\ofxSpout\libs\SpoutSDK\src\SpoutUtils.cpp">
       <Filter>addons\ofxSpout\libs\SpoutSDK\src</Filter>
     </ClCompile>
+    <ClCompile Include="mongoose.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="mngs_wrapper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
@@ -239,13 +243,16 @@
     <ClInclude Include="..\..\..\addons\ofxSpout\libs\SpoutSDK\src\SpoutUtils.h">
       <Filter>addons\ofxSpout\libs\SpoutSDK\src</Filter>
     </ClInclude>
-    <ClInclude Include="src\TCPNet.h">
-      <Filter>src</Filter>
-    </ClInclude>
     <ClInclude Include="src\StringHandling.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="resource.h" />
+    <ClInclude Include="mngs_wrapper.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="mongoose.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="bin\data\shaders\geom.glsl">

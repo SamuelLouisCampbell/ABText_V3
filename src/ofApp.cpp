@@ -21,9 +21,7 @@ void ofApp::setup()
 	sendOutline.init("A&B Text Outline", rasterSize.getWidth(), rasterSize.getHeight());
 
 	////server things
-	//server = std::make_unique<CustomServer>(port);
-	//server->Start();
-	//std::cout << "Server Started on Default Port: 60000" << std::endl;
+	mongoose.Init("127.0.0.1", 8000);
 
 	//GUI
 	gui.setup();
@@ -50,6 +48,7 @@ void ofApp::setup()
 //--------------------------------------------------------------
 void ofApp::update()
 {
+	mongoose.Update(16);
 	//server->Update(-1, false);
 	//RunHealthCheck();
 
@@ -232,8 +231,6 @@ void ofApp::draw()
 		}
 	}
 
-
-
 	//draw things to our screen
 	ofSetColor(255);
 	holdingLastMsg ? outlineFBO_Fade.draw(0, 0, ofGetWindowWidth(), ofGetWindowHeight()) 
@@ -249,8 +246,7 @@ void ofApp::draw()
 
 void ofApp::exit()
 {
-	//server->Stop();
-	//server.release();
+	mongoose.Close();
 }
 
 void ofApp::DrawCenterCross()

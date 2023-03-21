@@ -1,13 +1,14 @@
 #pragma once
 
 #include "ofMain.h"
-#include "TCPNet.h"
 #include "ofxSpout.h"
 #include "ofxImGui.h"
+#include "../mngs_wrapper.h"
+
 
 class ofApp : public ofBaseApp{
 
-	public:
+public:
 		void setup();
 		void update();
 		void draw();	
@@ -23,12 +24,9 @@ private:
 		float accuTime = 0.0f;
 		int accuFrame = 0;
 
-		////Server
-		//void RunHealthCheck();
-		//std::unique_ptr<CustomServer> server;
-		//int netLooper = 60;
+		//Mongoose WeB Server
+		MongooseWrapper mongoose;
 		static constexpr int bufferSize = 1024;
-		//int port = 60000;
 
 		//SPOUT
 		ofxSpout::Sender sendClean;
