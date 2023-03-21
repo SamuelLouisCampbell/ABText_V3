@@ -31,8 +31,8 @@ void ofApp::setup()
 	//Font
 	ABfontLarge = std::make_unique<ofTrueTypeFont>();
 	ABfontSmall = std::make_unique<ofTrueTypeFont>();
-	ABfontLarge->load("ABF.ttf", largeFontSize, true, true, true);
-	ABfontSmall->load("ABF.ttf", smallFontSize, true, true, true);
+	ABfontLarge->load("AGS.otf", largeFontSize, true, true, true);
+	ABfontSmall->load("AGS.otf", smallFontSize, true, true, true);
 
 	//Shader
 	outlineShader.setGeometryInputType(GL_LINES);
