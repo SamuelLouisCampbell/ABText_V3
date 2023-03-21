@@ -23,12 +23,12 @@ private:
 		float accuTime = 0.0f;
 		int accuFrame = 0;
 
-		//Server
-		void RunHealthCheck();
-		std::unique_ptr<CustomServer> server;
-		int netLooper = 60;
+		////Server
+		//void RunHealthCheck();
+		//std::unique_ptr<CustomServer> server;
+		//int netLooper = 60;
 		static constexpr int bufferSize = 1024;
-		int port = 60000;
+		//int port = 60000;
 
 		//SPOUT
 		ofxSpout::Sender sendClean;

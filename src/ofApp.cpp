@@ -20,10 +20,10 @@ void ofApp::setup()
 	sendClean.init("A&B Text Clean", rasterSize.getWidth(), rasterSize.getHeight());
 	sendOutline.init("A&B Text Outline", rasterSize.getWidth(), rasterSize.getHeight());
 
-	//server things
-	server = std::make_unique<CustomServer>(port);
-	server->Start();
-	std::cout << "Server Started on Default Port: 60000" << std::endl;
+	////server things
+	//server = std::make_unique<CustomServer>(port);
+	//server->Start();
+	//std::cout << "Server Started on Default Port: 60000" << std::endl;
 
 	//GUI
 	gui.setup();
@@ -50,11 +50,11 @@ void ofApp::setup()
 //--------------------------------------------------------------
 void ofApp::update()
 {
-	server->Update(-1, false);
-	RunHealthCheck();
+	//server->Update(-1, false);
+	//RunHealthCheck();
 
 	//update Terminal
-	std::string termTemp = server->GetInfoStream();
+	std::string termTemp = "";//server->GetInfoStream();
 	if (termTemp != oldTermMessage)
 	{
 		terminalEntries.push_back(termTemp);
@@ -117,7 +117,7 @@ void ofApp::draw()
 	//Get string from server
 	if (!demoText)
 	{
-		temp = wideToString(server->GetMessageStream());
+		//temp = wideToString(server->GetMessageStream());
 	}
 	else
 	{
@@ -249,8 +249,8 @@ void ofApp::draw()
 
 void ofApp::exit()
 {
-	server->Stop();
-	server.release();
+	//server->Stop();
+	//server.release();
 }
 
 void ofApp::DrawCenterCross()
@@ -328,18 +328,18 @@ void ofApp::clearFBO_All()
 	outlineFBO_Fade.end();
 }
 
-void ofApp::RunHealthCheck()
-{
-	//send healthcheck to clients
-	if (netLooper >= 60)
-	{
-		netLooper = 0;
-		server->CheckClientsHealth();
-		//Purge any messages in the server
-		server->EraseMessageQ();
-	}
-	netLooper++;
-}
+//void ofApp::RunHealthCheck()
+//{
+//	//send healthcheck to clients
+//	if (netLooper >= 60)
+//	{
+//		netLooper = 0;
+//		server->CheckClientsHealth();
+//		//Purge any messages in the server
+//		server->EraseMessageQ();
+//	}
+//	netLooper++;
+//}
 
 bool ofApp::SizeControl(const std::string& ctrlStr)
 {
