@@ -25,7 +25,7 @@ private:
 		int accuFrame = 0;
 
 		//Mongoose WeB Server
-		MongooseWrapper mongoose;
+		MgsWrapper mongoose;
 		static constexpr int bufferSize = 1024;
 
 		//SPOUT

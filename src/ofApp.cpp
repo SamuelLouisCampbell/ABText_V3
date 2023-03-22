@@ -21,7 +21,7 @@ void ofApp::setup()
 	sendOutline.init("A&B Text Outline", rasterSize.getWidth(), rasterSize.getHeight());
 
 	////server things
-	mongoose.Init("127.0.0.1", 8000);
+	mongoose.init("127.0.0.1", 8000);
 
 	//GUI
 	gui.setup();
@@ -48,12 +48,12 @@ void ofApp::setup()
 //--------------------------------------------------------------
 void ofApp::update()
 {
-	mongoose.Update(16);
+	mongoose.update(16);
 	//server->Update(-1, false);
 	//RunHealthCheck();
 
 	//update Terminal
-	std::string termTemp = "";//server->GetInfoStream();
+	std::string termTemp = mongoose.getStream(); "";//server->GetInfoStream();
 	if (termTemp != oldTermMessage)
 	{
 		terminalEntries.push_back(termTemp);
@@ -117,6 +117,8 @@ void ofApp::draw()
 	if (!demoText)
 	{
 		//temp = wideToString(server->GetMessageStream());
+		temp = mongoose.getStream();
+		mongoose.getStream().clear();
 	}
 	else
 	{
@@ -246,7 +248,7 @@ void ofApp::draw()
 
 void ofApp::exit()
 {
-	mongoose.Close();
+	mongoose.close();
 }
 
 void ofApp::DrawCenterCross()
