@@ -21,7 +21,8 @@ void ofApp::setup()
 	sendOutline.init("A&B Text Outline", rasterSize.getWidth(), rasterSize.getHeight());
 
 	////server things
-	mongoose.init("127.0.0.1", 8000);
+	mongoose = std::make_unique<MgsWrapper>();
+	mongoose->init();
 
 	//GUI
 	gui.setup();
@@ -29,8 +30,8 @@ void ofApp::setup()
 	//Font
 	ABfontLarge = std::make_unique<ofTrueTypeFont>();
 	ABfontSmall = std::make_unique<ofTrueTypeFont>();
-	ABfontLarge->load("AGS.otf", largeFontSize, true, true, true);
-	ABfontSmall->load("AGS.otf", smallFontSize, true, true, true);
+	ABfontLarge->load("ABF.ttf", largeFontSize, true, true, true);
+	ABfontSmall->load("ABF.ttf", smallFontSize, true, true, true);
 
 	//Shader
 	outlineShader.setGeometryInputType(GL_LINES);
@@ -48,12 +49,10 @@ void ofApp::setup()
 //--------------------------------------------------------------
 void ofApp::update()
 {
-	mongoose.update(16);
-	//server->Update(-1, false);
-	//RunHealthCheck();
+	mongoose->update(16);
 
 	//update Terminal
-	std::string termTemp = mongoose.getStream(); "";//server->GetInfoStream();
+	std::string termTemp = mongoose->getStream(); "";
 	if (termTemp != oldTermMessage)
 	{
 		terminalEntries.push_back(termTemp);
@@ -72,13 +71,13 @@ void ofApp::draw()
 	ImGui::Begin("A&B Renderer Controls");
 	if (ImGui::BeginChild("A&B Renderer Controls"))
 	{
-		if (ImGui::InputInt("!!! Large Font Size !!!", &largeFontSize))
+		if (ImGui::InputInt("Large Font Size", &largeFontSize))
 		{
 			ABfontLarge.release();
 			ABfontLarge = std::make_unique<ofTrueTypeFont>();
 			ABfontLarge->load("ABF.ttf", largeFontSize, true, true, true);
 		}
-		if (ImGui::InputInt("!!! Small Font Size !!!", &smallFontSize))
+		if (ImGui::InputInt("Small Font Size", &smallFontSize))
 		{
 			ABfontSmall.release();
 			ABfontSmall = std::make_unique<ofTrueTypeFont>();
@@ -117,8 +116,8 @@ void ofApp::draw()
 	if (!demoText)
 	{
 		//temp = wideToString(server->GetMessageStream());
-		temp = mongoose.getStream();
-		mongoose.getStream().clear();
+		temp = mongoose->getStream();
+		mongoose->getStream().clear();
 	}
 	else
 	{
@@ -248,7 +247,7 @@ void ofApp::draw()
 
 void ofApp::exit()
 {
-	mongoose.close();
+	mongoose->close();
 }
 
 void ofApp::DrawCenterCross()

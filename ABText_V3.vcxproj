@@ -217,6 +217,7 @@
     <ClCompile Include="..\..\..\addons\ofxSpout\libs\SpoutSDK\src\SpoutUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="LoadIP.h" />
     <ClInclude Include="mngs_wrapper.h" />
     <ClInclude Include="mongoose.h" />
     <ClInclude Include="resource.h" />

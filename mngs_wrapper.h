@@ -3,13 +3,14 @@
 #include <string>
 #include <iostream>
 #include <sstream>
+#include "LoadIP.h"
 
 static std::stringstream ss;
 
 class MgsWrapper
 {
 public:
-	void init(const std::string ipAddress, const int port);
+	void init();
 	void update(const int pollTimeMs);
 	std::string getStream();
 	void close();

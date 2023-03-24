@@ -253,6 +253,9 @@
     <ClInclude Include="mongoose.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="LoadIP.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="bin\data\shaders\geom.glsl">

@@ -25,7 +25,7 @@ private:
 		int accuFrame = 0;
 
 		//Mongoose WeB Server
-		MgsWrapper mongoose;
+		std::unique_ptr<MgsWrapper> mongoose;
 		static constexpr int bufferSize = 1024;
 
 		//SPOUT
@@ -62,7 +62,7 @@ private:
 		bool currLarge = false;
 		int largeFontSize = 360;
 		int smallFontSize = 128;
-		int smallFontBreak = 34;
+		int smallFontBreak = 36;
 		int largeFontBreak = 10;
 		float currFontSize = smallFontSize;
 		size_t currFontBreak = smallFontBreak;
