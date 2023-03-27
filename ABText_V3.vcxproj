@@ -102,7 +102,7 @@
       <Optimization>Disabled</Optimization>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <AdditionalIncludeDirectories>C:\Users\Sam Campbell\source\repos\SamCamAsioNetworking\NetCommon;C:\Users\Sam Campbell\source\repos\SamCamAsioNetworking\asio-1.18.0\asio-1.18.0\include;C:\Users\Sam Campbell\source\repos\SamCamAsioNetworking\asio-1.18.0\asio-1.18.0\include;C:\Users\Sam Campbell\source\repos\SamCamAsioNetworking\NetCommon;%(AdditionalIncludeDirectories);..\..\..\addons\ofxImGui-master\libs;..\..\..\addons\ofxImGui-master\libs\imgui;..\..\..\addons\ofxImGui-master\libs\imgui\src;..\..\..\addons\ofxImGui-master\src;..\..\..\addons\ofxSpout\libs;..\..\..\addons\ofxSpout\libs\SpoutSDK;..\..\..\addons\ofxSpout\libs\SpoutSDK\src;..\..\..\addons\ofxSpout\src;..\..\..\addons\ofxSpout\src\ofxSpout</AdditionalIncludeDirectories>
       <CompileAs>CompileAsCpp</CompileAs>
@@ -142,7 +142,7 @@
     <ClCompile>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <AdditionalIncludeDirectories>C:\Users\Sam Campbell\source\repos\SamCamAsioNetworking\NetCommon;C:\Users\Sam Campbell\source\repos\SamCamAsioNetworking\asio-1.18.0\asio-1.18.0\include;%(AdditionalIncludeDirectories);..\..\..\addons\ofxImGui-master\libs;..\..\..\addons\ofxImGui-master\libs\imgui;..\..\..\addons\ofxImGui-master\libs\imgui\src;..\..\..\addons\ofxImGui-master\src;..\..\..\addons\ofxSpout\libs;..\..\..\addons\ofxSpout\libs\SpoutSDK;..\..\..\addons\ofxSpout\libs\SpoutSDK\src;..\..\..\addons\ofxSpout\src;..\..\..\addons\ofxSpout\src\ofxSpout</AdditionalIncludeDirectories>
       <CompileAs>CompileAsCpp</CompileAs>

@@ -14,12 +14,13 @@ public:
 	void update(const int pollTimeMs);
 	std::string getStream();
 	void close();
+	std::string GetIP() const;
 
 private:
 	struct mg_mgr mgr;
 
 private:
-
+	std::string IPAddr;
 	static void fn(mg_connection* c, int ev, void* ev_data, void* fn_data);
 	static std::string convertToString(char* a, int size);
 

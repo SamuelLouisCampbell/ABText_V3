@@ -7,7 +7,7 @@ void MgsWrapper::init()
 	{
 		mg_mgr_init(&mgr);
 		mg_http_listen(&mgr, ipData.getIpString().c_str(), fn, &mgr);
-		std::cout << "Listening to: " << ipData.getIpString() << std::endl;
+		IPAddr = ipData.getIpString();
 	}
 	else
 	{
@@ -15,8 +15,9 @@ void MgsWrapper::init()
 		std::string ipAddr = "127.0.0.1:8000";
 		mg_mgr_init(&mgr);
 		mg_http_listen(&mgr, ipAddr.c_str(), fn, &mgr);
-		std::cout << "Listening to: " << ipAddr << std::endl;
+		IPAddr = ipAddr;
 	}
+
 }
 
 void MgsWrapper::update(const int pollTimeMs)
@@ -33,6 +34,11 @@ std::string MgsWrapper::getStream()
 void MgsWrapper::close()
 {
 	mg_mgr_free(&mgr);
+}
+
+std::string MgsWrapper::GetIP() const
+{
+	return IPAddr;
 }
 
 void MgsWrapper::fn(mg_connection* c, int ev, void* ev_data, void* fn_data)

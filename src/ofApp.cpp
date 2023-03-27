@@ -98,14 +98,15 @@ void ofApp::draw()
 			updateText = true;
 			currLarge = !currLarge;
 		}
-		ImGui::ListBoxHeader("", { 390, 195 });
-		for (auto& item : terminalEntries)
+		if (ImGui::ListBoxHeader("", { 390, 195 }))
 		{
-			ImGui::TextColored({ 0.0f, 1.0f, 0.6f, 1.0f }, item.c_str());
-			ImGui::SetScrollHere();
+			for (auto& item : terminalEntries)
+				{
+					ImGui::TextColored({ 0.0f, 1.0f, 0.6f, 1.0f }, item.c_str());
+					ImGui::SetScrollHere();
+				}
+			ImGui::ListBoxFooter();
 		}
-		ImGui::ListBoxFooter();
-
 		ImGui::EndChild();
 	}
 	ImGui::End();
