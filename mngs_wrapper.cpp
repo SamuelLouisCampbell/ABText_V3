@@ -5,10 +5,9 @@ void MgsWrapper::init()
 	LoadIPData ipData("defaults.txt");
 	if (ipData.FileReadOK())
 	{
-		std::string ipAddr = ipData.GetIP() + ':' + std::to_string(ipData.GetServerPort());
 		mg_mgr_init(&mgr);
-		mg_http_listen(&mgr, ipAddr.c_str(), fn, &mgr);
-		std::cout << "Listening to: " << ipAddr << std::endl;
+		mg_http_listen(&mgr, ipData.getIpString().c_str(), fn, &mgr);
+		std::cout << "Listening to: " << ipData.getIpString() << std::endl;
 	}
 	else
 	{
@@ -61,10 +60,7 @@ void MgsWrapper::fn(mg_connection* c, int ev, void* ev_data, void* fn_data)
 			m.erase(0, 8);
 			std::string json = "{smallstring: " + m + "}";
 			mg_http_reply(c, 200, "Content-Type: application/json\r\n", "%s\n", json.c_str());
-			////test
-			//char* json_1 = mg_mprintf("{%Q:%d}", "name", 123);
-			//mg_http_reply(c, 200, "Content-Type: application/json\r\n", "%s\n", json_1);
-			//free(json_1);
+			
 		}
 		char bufferLarge[128] = "";
 		int large = mg_http_get_var(&hm->body, "large", bufferLarge, sizeof(bufferLarge));

@@ -87,8 +87,10 @@ void ofApp::draw()
 		ImGui::InputInt("Small Line Break Number", &smallFontBreak);
 		ImGui::InputFloat("Large Outline Stroke", &borderWidthLarge, 0.01f, 0.1f);
 		ImGui::InputFloat("Small Outline Stroke", &borderWidthSmall, 0.01f, 0.1f);
-		ImGui::InputFloat("Large Y Offset", &large_y_off, 0.1f, 1.0f);
-		ImGui::InputFloat("small Y Offset", &small_y_off, 0.1f, 1.0f);
+		ImGui::InputInt("Fade Time", &alphaTime);
+		//sanity on alpha
+		if (alphaTime < 1) alphaTime = 1;
+		if (alphaTime > 30) alphaTime = 30;
 		ImGui::Checkbox("Draw Center Cross", &drawCross);
 		ImGui::Checkbox("Draw Demo Text", &demoText);
 		if (ImGui::Button("Toggle Large Text"))

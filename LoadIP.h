@@ -30,6 +30,10 @@ public:
 			fileReadOk = false;
 		}
 	}
+	std::string getIpString() const
+	{
+		return clientIP + ":" + std::to_string(serverPort);
+	}
 	unsigned short GetServerPort() const
 	{
 		return unsigned short(serverPort);
@@ -37,14 +41,6 @@ public:
 	const char* GetIP() const
 	{
 		return clientIP.c_str();
-	}
-	void SetPortToDefault()
-	{
-		serverPort = 5000U;
-	}
-	void SetIPToDefault()
-	{
-		clientIP = "127.0.0.1";
 	}
 	bool FileReadOK() const
 	{
